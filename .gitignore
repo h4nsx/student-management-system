@@ -1,0 +1,50 @@
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Logs
+*.log
+logs/
+
+# Environment variables
+.env
+.env.*
+
+# IDE
+.vscode/
+.idea/
+
+# Node modules
+node_modules/
+
+# Build folders
+dist/
+build/
+
+# Coverage
+coverage/
+
+# Temp files
+tmp/
+temp/
+
+# Package lock files (optional)
+# package-lock.json
+# yarn.lock
+
+# Uploads
+uploads/
+
+# Cache
+.cache/
+
+# Mac
+.AppleDouble
+.LSOverride
+
+# Linux
+*~
+
+# Windows
+Desktop.ini

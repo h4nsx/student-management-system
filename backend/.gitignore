@@ -1,0 +1,58 @@
+# =========================
+# EXPRESS BACKEND
+# =========================
+
+# Dependencies
+/node_modules
+
+# Environment variables
+.env
+
+# Logs
+logs
+*.log
+npm-debug.log*
+
+# Runtime data
+pids
+*.pid
+*.seed
+*.pid.lock
+
+# Coverage
+coverage/
+
+# Build output
+dist/
+
+# Uploads
+uploads/
+public/uploads/
+
+# Temp files
+tmp/
+temp/
+
+# IDE
+.vscode/
+.idea/
+
+# Database dumps
+*.sql
+*.sqlite
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# Nodemon
+nodemon.json
+
+# Cache
+.cache/
+
+# JWT secret backups
+secret.txt
+
+# Testing
+/test-results
