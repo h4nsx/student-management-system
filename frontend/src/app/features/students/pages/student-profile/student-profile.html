@@ -1,1 +1,136 @@
-<p>student-profile works!</p>
+<div class="app-shell">
+  <app-navbar></app-navbar>
+  <div class="app-body">
+    <app-sidebar></app-sidebar>
+    <main class="main-content">
+
+      <!-- Hero Card -->
+      <div class="profile-hero">
+        <div class="hero-bg"></div>
+        <div class="hero-content">
+          <div class="avatar-wrap">
+            @if (student().avatar) {
+              <img class="avatar-img" [src]="student().avatar" [alt]="student().fullName">
+            } @else {
+              <div class="avatar-placeholder">{{ initials() }}</div>
+            }
+            <button class="avatar-edit-btn" title="Thay đổi ảnh">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"/>
+                <circle cx="12" cy="13" r="4"/>
+              </svg>
+            </button>
+          </div>
+          <div class="hero-info">
+            <h1 class="hero-name">{{ student().fullName }}</h1>
+            <div class="hero-meta">
+              <span class="meta-chip">{{ student().studentId }}</span>
+              <span class="meta-chip">{{ student().major }}</span>
+              <span class="meta-chip status-active">{{ student().status }}</span>
+            </div>
+            <div class="hero-sub">{{ student().faculty }} · {{ student().course }}</div>
+          </div>
+          <div class="hero-stats">
+            <div class="hero-stat">
+              <div class="hstat-value" [class]="'gpa-' + gpaClass()">{{ student().gpa }}</div>
+              <div class="hstat-label">GPA</div>
+              <div class="hstat-tag" [class]="'gpa-tag-' + gpaClass()">{{ gpaLabel() }}</div>
+            </div>
+            <div class="hero-stat-divider"></div>
+            <div class="hero-stat">
+              <div class="hstat-value">{{ student().credits }}</div>
+              <div class="hstat-label">Tín chỉ</div>
+            </div>
+            <div class="hero-stat-divider"></div>
+            <div class="hero-stat">
+              <div class="hstat-value">{{ student().conduct }}</div>
+              <div class="hstat-label">Rèn luyện</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Tabs -->
+      <div class="tabs">
+        <button class="tab-btn" [class.active]="activeTab() === 'personal'" (click)="activeTab.set('personal')">
+          Thông tin cá nhân
+        </button>
+        <button class="tab-btn" [class.active]="activeTab() === 'academic'" (click)="activeTab.set('academic')">
+          Thông tin học tập
+        </button>
+      </div>
+
+      @if (activeTab() === 'personal') {
+        <div class="info-card">
+          <div class="info-grid">
+            <div class="info-field">
+              <span class="field-label">Họ và tên</span>
+              <span class="field-value">{{ student().fullName }}</span>
+            </div>
+            <div class="info-field">
+              <span class="field-label">Ngày sinh</span>
+              <span class="field-value">{{ student().dob }}</span>
+            </div>
+            <div class="info-field">
+              <span class="field-label">Giới tính</span>
+              <span class="field-value">{{ student().gender }}</span>
+            </div>
+            <div class="info-field">
+              <span class="field-label">Quê quán</span>
+              <span class="field-value">{{ student().hometown }}</span>
+            </div>
+            <div class="info-field">
+              <span class="field-label">Email</span>
+              <span class="field-value">{{ student().email }}</span>
+            </div>
+            <div class="info-field">
+              <span class="field-label">Số điện thoại</span>
+              <span class="field-value">{{ student().phone }}</span>
+            </div>
+          </div>
+          <div class="card-footer">
+            <a class="btn-edit" routerLink="/students/detail">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/>
+                <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/>
+              </svg>
+              Chỉnh sửa thông tin
+            </a>
+          </div>
+        </div>
+      }
+
+      @if (activeTab() === 'academic') {
+        <div class="info-card">
+          <div class="info-grid">
+            <div class="info-field">
+              <span class="field-label">Khoa</span>
+              <span class="field-value">{{ student().faculty }}</span>
+            </div>
+            <div class="info-field">
+              <span class="field-label">Ngành</span>
+              <span class="field-value">{{ student().major }}</span>
+            </div>
+            <div class="info-field">
+              <span class="field-label">Khoá</span>
+              <span class="field-value">{{ student().course }}</span>
+            </div>
+            <div class="info-field">
+              <span class="field-label">Lớp</span>
+              <span class="field-value">{{ student().classId }}</span>
+            </div>
+            <div class="info-field">
+              <span class="field-label">Cố vấn học tập</span>
+              <span class="field-value">{{ student().advisor }}</span>
+            </div>
+            <div class="info-field">
+              <span class="field-label">Trạng thái</span>
+              <span class="field-value status-chip">{{ student().status }}</span>
+            </div>
+          </div>
+        </div>
+      }
+
+    </main>
+  </div>
+</div>

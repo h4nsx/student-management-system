@@ -1,9 +1,15 @@
-import { Component } from '@angular/core';
+import { Component, input } from '@angular/core';
+import { CommonModule } from '@angular/common';
 
 @Component({
   selector: 'app-loading-spinner',
-  imports: [],
+  standalone: true,
+  imports: [CommonModule],
   templateUrl: './loading-spinner.html',
-  styleUrl: './loading-spinner.css',
+  styleUrl: './loading-spinner.css'
 })
-export class LoadingSpinner {}
+export class LoadingSpinner {
+  size = input<'sm' | 'md' | 'lg'>('md');
+  message = input<string>('Đang tải...');
+  overlay = input<boolean>(false);
+}

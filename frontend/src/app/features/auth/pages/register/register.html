@@ -1,1 +1,91 @@
-<p>register works!</p>
+<div class="auth-layout">
+  <div class="auth-left">
+    <div class="auth-brand">
+      <div class="brand-icon">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <path d="M12 2L2 7l10 5 10-5-10-5z"/>
+          <path d="M2 17l10 5 10-5"/>
+          <path d="M2 12l10 5 10-5"/>
+        </svg>
+      </div>
+      <span>EduTrack</span>
+    </div>
+    <h1 class="auth-headline">Tạo tài khoản mới</h1>
+    <p class="auth-desc">Đăng ký để truy cập hệ thống quản lý sinh viên của trường.</p>
+  </div>
+
+  <div class="auth-right">
+    <div class="auth-card">
+      <h2 class="card-title">Đăng ký</h2>
+      <p class="card-sub">Điền thông tin để tạo tài khoản</p>
+
+      @if (errorMessage()) {
+        <div class="error-alert">{{ errorMessage() }}</div>
+      }
+
+      <div class="form-row-2">
+        <div class="form-group">
+          <label>Họ và tên</label>
+          <input type="text" placeholder="Nguyễn Văn An"
+            [value]="fullName()"
+            (input)="fullName.set($any($event.target).value)">
+        </div>
+        <div class="form-group">
+          <label>Mã sinh viên</label>
+          <input type="text" placeholder="SV2021001"
+            [value]="studentId()"
+            (input)="studentId.set($any($event.target).value)">
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label>Email sinh viên</label>
+        <input type="email" placeholder="masv@university.edu.vn"
+          [value]="email()"
+          (input)="email.set($any($event.target).value)">
+      </div>
+
+      <div class="form-group">
+        <label>Mật khẩu</label>
+        <input [type]="showPassword() ? 'text' : 'password'" placeholder="Tối thiểu 8 ký tự"
+          [value]="password()"
+          (input)="password.set($any($event.target).value)">
+        @if (password()) {
+          <div class="strength-bar">
+            <div class="strength-track">
+              <div class="strength-fill" [style.width]="(passwordStrength() / 4 * 100) + '%'"
+                [class]="'strength-' + passwordStrength()"></div>
+            </div>
+            <span class="strength-label" [class]="'strength-' + passwordStrength()">
+              {{ strengthLabel() }}
+            </span>
+          </div>
+        }
+      </div>
+
+      <div class="form-group">
+        <label>Xác nhận mật khẩu</label>
+        <input [type]="showPassword() ? 'text' : 'password'" placeholder="Nhập lại mật khẩu"
+          [value]="confirmPassword()"
+          (input)="confirmPassword.set($any($event.target).value)">
+      </div>
+
+      <label class="checkbox-label" style="margin-bottom: 20px">
+        <input type="checkbox" (change)="showPassword.update(v=>!v)">
+        <span>Hiển thị mật khẩu</span>
+      </label>
+
+      <button class="btn-submit" (click)="onSubmit()" [disabled]="isLoading()">
+        @if (isLoading()) {
+          <span class="btn-spinner"></span> Đang tạo tài khoản...
+        } @else {
+          Tạo tài khoản
+        }
+      </button>
+
+      <p class="login-link">
+        Đã có tài khoản? <a routerLink="/auth/login">Đăng nhập</a>
+      </p>
+    </div>
+  </div>
+</div>

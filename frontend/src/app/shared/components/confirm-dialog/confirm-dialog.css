@@ -1,0 +1,95 @@
+:host { display: contents; }
+
+.dialog-backdrop {
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,0.6);
+  backdrop-filter: blur(4px);
+  z-index: 1000;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  animation: fadeIn 0.15s ease;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+.dialog-panel {
+  background: #1e293b;
+  border-radius: 16px;
+  padding: 32px;
+  width: 360px;
+  text-align: center;
+  animation: slideUp 0.2s ease;
+  border: 1px solid rgba(255,255,255,0.08);
+  box-shadow: 0 25px 80px rgba(0,0,0,0.5);
+}
+
+@keyframes slideUp {
+  from { transform: translateY(20px); opacity: 0; }
+  to { transform: translateY(0); opacity: 1; }
+}
+
+.dialog-icon {
+  width: 56px;
+  height: 56px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 0 auto 20px;
+}
+
+.type-danger .dialog-icon { background: rgba(239, 68, 68, 0.15); color: #f87171; }
+.type-warning .dialog-icon { background: rgba(245, 158, 11, 0.15); color: #fbbf24; }
+.type-info .dialog-icon { background: rgba(99, 102, 241, 0.15); color: #818cf8; }
+
+.dialog-icon svg { width: 28px; height: 28px; }
+
+.dialog-title {
+  font-size: 18px;
+  font-weight: 700;
+  color: #f1f5f9;
+  margin: 0 0 10px;
+}
+
+.dialog-message {
+  font-size: 14px;
+  color: #94a3b8;
+  margin: 0 0 28px;
+  line-height: 1.6;
+}
+
+.dialog-actions {
+  display: flex;
+  gap: 10px;
+}
+
+.btn-cancel, .btn-confirm {
+  flex: 1;
+  padding: 11px;
+  border-radius: 10px;
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  border: none;
+  transition: all 0.2s;
+}
+
+.btn-cancel {
+  background: rgba(255,255,255,0.06);
+  color: #94a3b8;
+  border: 1px solid rgba(255,255,255,0.08);
+}
+
+.btn-cancel:hover { background: rgba(255,255,255,0.1); color: #f1f5f9; }
+
+.confirm-danger { background: #ef4444; color: white; }
+.confirm-danger:hover { background: #dc2626; }
+.confirm-warning { background: #f59e0b; color: white; }
+.confirm-warning:hover { background: #d97706; }
+.confirm-info { background: #6366f1; color: white; }
+.confirm-info:hover { background: #4f46e5; }

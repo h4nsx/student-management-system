@@ -1,1 +1,76 @@
-<p>student-card works!</p>
+<div class="student-card" (click)="view.emit(student())">
+  <!-- Card header -->
+  <div class="card-header">
+    <div class="avatar" [style.background]="avatarGradient()">
+      {{ initials() }}
+    </div>
+    <div class="header-info">
+      <div class="student-name">{{ student().fullName }}</div>
+      <div class="student-id">{{ student().studentId }}</div>
+    </div>
+    <span class="status-badge" [class]="'status-' + (student().status === 'Đang học' ? 'active' : 'paused')">
+      {{ student().status }}
+    </span>
+  </div>
+
+  <!-- Divider -->
+  <div class="card-divider"></div>
+
+  <!-- Info rows -->
+  <div class="card-body">
+    <div class="info-row">
+      <span class="info-icon">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"/>
+        </svg>
+      </span>
+      <span class="info-text">{{ student().major }}</span>
+    </div>
+    <div class="info-row">
+      <span class="info-icon">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/>
+          <circle cx="9" cy="7" r="4"/>
+        </svg>
+      </span>
+      <span class="info-text">Lớp {{ student().classId }}</span>
+    </div>
+    <div class="info-row">
+      <span class="info-icon">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/>
+          <polyline points="22,6 12,13 2,6"/>
+        </svg>
+      </span>
+      <span class="info-text">{{ student().email }}</span>
+    </div>
+  </div>
+
+  <!-- GPA + Actions -->
+  <div class="card-footer">
+    <div class="gpa-section">
+      <span class="gpa-label">GPA</span>
+      <span class="gpa-value" [class]="'gpa-' + gpaClass()">{{ student().gpa }}</span>
+    </div>
+    <div class="card-actions" (click)="$event.stopPropagation()">
+      <button class="action-btn view-btn" (click)="view.emit(student())" title="Xem chi tiết">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/>
+          <circle cx="12" cy="12" r="3"/>
+        </svg>
+      </button>
+      <button class="action-btn edit-btn" (click)="edit.emit(student())" title="Chỉnh sửa">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/>
+          <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/>
+        </svg>
+      </button>
+      <button class="action-btn delete-btn" (click)="delete.emit(student())" title="Xoá">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <polyline points="3 6 5 6 21 6"/>
+          <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a1 1 0 0 1 1-1h4a1 1 0 0 1 1 1v2"/>
+        </svg>
+      </button>
+    </div>
+  </div>
+</div>

@@ -1,1 +1,294 @@
-<p>student-detail works!</p>
+<div class="app-shell">
+  <app-navbar></app-navbar>
+  <div class="app-body">
+    <app-sidebar></app-sidebar>
+    <main class="main-content">
+
+      <div class="page-header">
+        <div>
+          <h1 class="page-title">Thông tin đầy đủ</h1>
+          <p class="page-sub">{{ student().fullName }} · {{ student().studentId }}</p>
+        </div>
+        <button class="btn-edit" (click)="toggleEdit()" [class.active]="isEditing()">
+          @if (isEditing()) {
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"/><polyline points="17 21 17 13 7 13 7 21"/><polyline points="7 3 7 8 15 8"/></svg>
+            Lưu thay đổi
+          } @else {
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>
+            Chỉnh sửa
+          }
+        </button>
+      </div>
+
+      <!-- Tabs -->
+      <div class="tabs">
+        @for (tab of tabs; track tab.key) {
+          <button class="tab-btn" [class.active]="activeTab() === tab.key" (click)="activeTab.set(tab.key)">
+            {{ tab.label }}
+          </button>
+        }
+      </div>
+
+      <!-- Personal Tab -->
+      @if (activeTab() === 'personal') {
+        <div class="section-card">
+          <div class="section-title">Thông tin cơ bản</div>
+          <div class="form-grid">
+            <div class="form-field">
+              <label>Họ và tên</label>
+              @if (isEditing()) {
+                <input type="text" [value]="student().fullName" (input)="student.update(s=>({...s, fullName: $any($event.target).value}))">
+              } @else {
+                <span>{{ student().fullName }}</span>
+              }
+            </div>
+            <div class="form-field">
+              <label>Mã sinh viên</label>
+              <span class="text-muted">{{ student().studentId }}</span>
+            </div>
+            <div class="form-field">
+              <label>Ngày sinh</label>
+              @if (isEditing()) {
+                <input type="date" [value]="student().dob" (input)="student.update(s=>({...s, dob: $any($event.target).value}))">
+              } @else {
+                <span>{{ student().dob }}</span>
+              }
+            </div>
+            <div class="form-field">
+              <label>Giới tính</label>
+              @if (isEditing()) {
+                <select [value]="student().gender" (change)="student.update(s=>({...s, gender: $any($event.target).value}))">
+                  <option>Nam</option><option>Nữ</option><option>Khác</option>
+                </select>
+              } @else {
+                <span>{{ student().gender }}</span>
+              }
+            </div>
+            <div class="form-field">
+              <label>Dân tộc</label>
+              @if (isEditing()) {
+                <input type="text" [value]="student().ethnicity" (input)="student.update(s=>({...s, ethnicity: $any($event.target).value}))">
+              } @else {
+                <span>{{ student().ethnicity }}</span>
+              }
+            </div>
+            <div class="form-field">
+              <label>Tôn giáo</label>
+              @if (isEditing()) {
+                <input type="text" [value]="student().religion" (input)="student.update(s=>({...s, religion: $any($event.target).value}))">
+              } @else {
+                <span>{{ student().religion }}</span>
+              }
+            </div>
+            <div class="form-field">
+              <label>Quốc tịch</label>
+              <span>{{ student().nationality }}</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="section-card">
+          <div class="section-title">Giấy tờ tùy thân</div>
+          <div class="form-grid">
+            <div class="form-field">
+              <label>Số CMND/CCCD</label>
+              @if (isEditing()) {
+                <input type="text" [value]="student().idCard" (input)="student.update(s=>({...s, idCard: $any($event.target).value}))">
+              } @else {
+                <span>{{ student().idCard }}</span>
+              }
+            </div>
+            <div class="form-field">
+              <label>Ngày cấp</label>
+              @if (isEditing()) {
+                <input type="date" [value]="student().idDate" (input)="student.update(s=>({...s, idDate: $any($event.target).value}))">
+              } @else {
+                <span>{{ student().idDate }}</span>
+              }
+            </div>
+            <div class="form-field full-col">
+              <label>Nơi cấp</label>
+              @if (isEditing()) {
+                <input type="text" [value]="student().idPlace" (input)="student.update(s=>({...s, idPlace: $any($event.target).value}))">
+              } @else {
+                <span>{{ student().idPlace }}</span>
+              }
+            </div>
+          </div>
+        </div>
+
+        <div class="section-card">
+          <div class="section-title">Liên hệ</div>
+          <div class="form-grid">
+            <div class="form-field">
+              <label>Số điện thoại</label>
+              @if (isEditing()) {
+                <input type="tel" [value]="student().phone" (input)="student.update(s=>({...s, phone: $any($event.target).value}))">
+              } @else {
+                <span>{{ student().phone }}</span>
+              }
+            </div>
+            <div class="form-field">
+              <label>Email</label>
+              @if (isEditing()) {
+                <input type="email" [value]="student().email" (input)="student.update(s=>({...s, email: $any($event.target).value}))">
+              } @else {
+                <span>{{ student().email }}</span>
+              }
+            </div>
+            <div class="form-field full-col">
+              <label>Địa chỉ thường trú</label>
+              @if (isEditing()) {
+                <input type="text" [value]="student().address" (input)="student.update(s=>({...s, address: $any($event.target).value}))">
+              } @else {
+                <span>{{ student().address }}</span>
+              }
+            </div>
+            <div class="form-field">
+              <label>Quê quán</label>
+              @if (isEditing()) {
+                <input type="text" [value]="student().hometown" (input)="student.update(s=>({...s, hometown: $any($event.target).value}))">
+              } @else {
+                <span>{{ student().hometown }}</span>
+              }
+            </div>
+          </div>
+        </div>
+      }
+
+      <!-- Academic Tab -->
+      @if (activeTab() === 'academic') {
+        <div class="section-card">
+          <div class="section-title">Thông tin học tập</div>
+          <div class="form-grid">
+            <div class="form-field full-col">
+              <label>Khoa</label>
+              <span>{{ student().faculty }}</span>
+            </div>
+            <div class="form-field">
+              <label>Ngành học</label>
+              <span>{{ student().major }}</span>
+            </div>
+            <div class="form-field">
+              <label>Khoá</label>
+              <span>{{ student().course }}</span>
+            </div>
+            <div class="form-field">
+              <label>Lớp</label>
+              <span>{{ student().classId }}</span>
+            </div>
+            <div class="form-field">
+              <label>Cố vấn học tập</label>
+              <span>{{ student().advisor }}</span>
+            </div>
+            <div class="form-field">
+              <label>Ngày nhập học</label>
+              <span>{{ student().enrollDate }}</span>
+            </div>
+            <div class="form-field">
+              <label>Dự kiến tốt nghiệp</label>
+              <span>{{ student().expectedGrad }}</span>
+            </div>
+            <div class="form-field">
+              <label>Trạng thái</label>
+              <span class="badge-active">{{ student().status }}</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="section-card">
+          <div class="section-title">Kết quả học tập</div>
+          <div class="academic-stats">
+            <div class="astat-card">
+              <div class="astat-value gpa-color">{{ student().gpa }}</div>
+              <div class="astat-label">GPA / 4.0</div>
+            </div>
+            <div class="astat-card">
+              <div class="astat-value">{{ student().credits }}/{{ student().totalCredits }}</div>
+              <div class="astat-label">Tín chỉ tích lũy</div>
+              <div class="progress-bar">
+                <div class="progress-fill" [style.width]="creditPercent() + '%'"></div>
+              </div>
+              <div class="progress-label">{{ creditPercent() }}% hoàn thành</div>
+            </div>
+            <div class="astat-card">
+              <div class="astat-value conduct-color">{{ student().conduct }}</div>
+              <div class="astat-label">Điểm rèn luyện</div>
+            </div>
+          </div>
+          <div class="form-field" style="margin-top: 20px">
+            <label>Học bổng</label>
+            <span class="badge-scholarship">{{ student().scholarship }}</span>
+          </div>
+        </div>
+      }
+
+      <!-- Documents Tab -->
+      @if (activeTab() === 'documents') {
+        <div class="section-card">
+          <div class="section-header-row">
+            <div class="section-title">Hồ sơ tài liệu</div>
+            <button class="btn-upload">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <polyline points="16 16 12 12 8 16"/>
+                <line x1="12" y1="12" x2="12" y2="21"/>
+                <path d="M20.39 18.39A5 5 0 0 0 18 9h-1.26A8 8 0 1 0 3 16.3"/>
+              </svg>
+              Tải lên tài liệu
+            </button>
+          </div>
+          <div class="doc-list">
+            @for (doc of documents(); track doc.name) {
+              <div class="doc-item">
+                <div class="doc-icon">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/>
+                    <polyline points="14 2 14 8 20 8"/>
+                  </svg>
+                </div>
+                <div class="doc-info">
+                  <div class="doc-name">{{ doc.name }}</div>
+                  <div class="doc-meta">{{ doc.date }} · {{ doc.size }}</div>
+                </div>
+                <span class="doc-status" [class]="'status-' + doc.status">
+                  {{ doc.status === 'verified' ? 'Đã xác thực' : 'Chờ duyệt' }}
+                </span>
+                <div class="doc-actions">
+                  <button class="doc-btn" title="Xem">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                      <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/>
+                    </svg>
+                  </button>
+                  <button class="doc-btn" title="Tải xuống">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                      <polyline points="8 17 12 21 16 17"/><line x1="12" y1="12" x2="12" y2="21"/>
+                      <path d="M20.88 18.09A5 5 0 0 0 18 9h-1.26A8 8 0 1 0 3 16.3"/>
+                    </svg>
+                  </button>
+                </div>
+              </div>
+            }
+          </div>
+        </div>
+      }
+
+    </main>
+  </div>
+</div>
+
+<!-- Loading overlay -->
+@if (isSaving()) {
+  <app-loading-spinner [overlay]="true" message="Đang lưu thay đổi..."></app-loading-spinner>
+}
+
+<!-- Confirm save dialog -->
+<app-confirm-dialog
+  title="Lưu thay đổi?"
+  message="Bạn có chắc chắn muốn lưu các thay đổi này không?"
+  confirmLabel="Lưu"
+  cancelLabel="Hủy"
+  type="info"
+  [visible]="showConfirmSave()"
+  (confirmed)="confirmSave()"
+  (cancelled)="cancelSave()">
+</app-confirm-dialog>

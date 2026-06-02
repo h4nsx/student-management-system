@@ -1,1 +1,341 @@
-<p>student-form works!</p>
+<div class="app-shell">
+  <app-navbar></app-navbar>
+  <div class="app-body">
+    <app-sidebar></app-sidebar>
+    <main class="main-content">
+
+      <div class="page-header">
+        <div>
+          <h1 class="page-title">{{ isEditMode() ? 'Chỉnh sửa sinh viên' : 'Thêm sinh viên mới' }}</h1>
+          <p class="page-sub">{{ isEditMode() ? 'Cập nhật thông tin sinh viên' : 'Điền đầy đủ thông tin để tạo hồ sơ' }}</p>
+        </div>
+        <a class="btn-cancel" routerLink="/students/list">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/>
+          </svg>
+          Hủy
+        </a>
+      </div>
+
+      <!-- Step Indicator -->
+      <div class="step-indicator">
+        @for (step of steps; track step.key; let i = $index) {
+          <div class="step-item"
+            [class.active]="currentStep() === step.key"
+            [class.done]="currentStepIndex() > i"
+            (click)="currentStepIndex() > i && currentStep.set(step.key)">
+            <div class="step-circle">
+              @if (currentStepIndex() > i) {
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+                  <polyline points="20 6 9 17 4 12"/>
+                </svg>
+              } @else {
+                <span>{{ i + 1 }}</span>
+              }
+            </div>
+            <span class="step-label">{{ step.label }}</span>
+          </div>
+          @if (i < steps.length - 1) {
+            <div class="step-line" [class.done]="currentStepIndex() > i"></div>
+          }
+        }
+      </div>
+
+      <!-- Form Panel -->
+      <div class="form-panel">
+
+        <!-- STEP 1: Personal -->
+        @if (currentStep() === 'personal') {
+          <div class="form-section">
+            <div class="section-title">Thông tin cá nhân</div>
+            <div class="form-grid">
+
+              <div class="form-field" [class.has-error]="getError('fullName')">
+                <label>Họ và tên <span class="required">*</span></label>
+                <input type="text" placeholder="Nguyễn Văn An"
+                  [value]="form().fullName"
+                  (input)="updateField('fullName', $any($event.target).value)">
+                @if (getError('fullName')) { <span class="error-msg">{{ getError('fullName') }}</span> }
+              </div>
+
+              <div class="form-field" [class.has-error]="getError('dob')">
+                <label>Ngày sinh <span class="required">*</span></label>
+                <input type="date"
+                  [value]="form().dob"
+                  (input)="updateField('dob', $any($event.target).value)">
+                @if (getError('dob')) { <span class="error-msg">{{ getError('dob') }}</span> }
+              </div>
+
+              <div class="form-field">
+                <label>Giới tính</label>
+                <select [value]="form().gender" (change)="updateField('gender', $any($event.target).value)">
+                  <option>Nam</option><option>Nữ</option><option>Khác</option>
+                </select>
+              </div>
+
+              <div class="form-field">
+                <label>Dân tộc</label>
+                <input type="text" placeholder="Kinh"
+                  [value]="form().ethnicity"
+                  (input)="updateField('ethnicity', $any($event.target).value)">
+              </div>
+
+              <div class="form-field">
+                <label>Tôn giáo</label>
+                <input type="text" placeholder="Không"
+                  [value]="form().religion"
+                  (input)="updateField('religion', $any($event.target).value)">
+              </div>
+
+              <div class="form-field">
+                <label>Quốc tịch</label>
+                <input type="text" placeholder="Việt Nam"
+                  [value]="form().nationality"
+                  (input)="updateField('nationality', $any($event.target).value)">
+              </div>
+
+            </div>
+          </div>
+
+          <div class="form-section">
+            <div class="section-title">Giấy tờ tùy thân</div>
+            <div class="form-grid">
+              <div class="form-field" [class.has-error]="getError('idCard')">
+                <label>Số CMND/CCCD <span class="required">*</span></label>
+                <input type="text" placeholder="079203012345"
+                  [value]="form().idCard"
+                  (input)="updateField('idCard', $any($event.target).value)">
+                @if (getError('idCard')) { <span class="error-msg">{{ getError('idCard') }}</span> }
+              </div>
+              <div class="form-field">
+                <label>Ngày cấp</label>
+                <input type="date" [value]="form().idDate" (input)="updateField('idDate', $any($event.target).value)">
+              </div>
+              <div class="form-field full-col">
+                <label>Nơi cấp</label>
+                <input type="text" placeholder="Cục Cảnh sát ĐKQL cư trú..."
+                  [value]="form().idPlace"
+                  (input)="updateField('idPlace', $any($event.target).value)">
+              </div>
+            </div>
+          </div>
+
+          <div class="form-section">
+            <div class="section-title">Liên hệ</div>
+            <div class="form-grid">
+              <div class="form-field" [class.has-error]="getError('phone')">
+                <label>Số điện thoại <span class="required">*</span></label>
+                <input type="tel" placeholder="0901234567"
+                  [value]="form().phone"
+                  (input)="updateField('phone', $any($event.target).value)">
+                @if (getError('phone')) { <span class="error-msg">{{ getError('phone') }}</span> }
+              </div>
+              <div class="form-field" [class.has-error]="getError('email')">
+                <label>Email <span class="required">*</span></label>
+                <input type="email" placeholder="masv@university.edu.vn"
+                  [value]="form().email"
+                  (input)="updateField('email', $any($event.target).value)">
+                @if (getError('email')) { <span class="error-msg">{{ getError('email') }}</span> }
+              </div>
+              <div class="form-field full-col">
+                <label>Địa chỉ thường trú</label>
+                <input type="text" placeholder="123 Đường ABC, Phường XY..."
+                  [value]="form().address"
+                  (input)="updateField('address', $any($event.target).value)">
+              </div>
+              <div class="form-field">
+                <label>Quê quán</label>
+                <input type="text" placeholder="TP. Hồ Chí Minh"
+                  [value]="form().hometown"
+                  (input)="updateField('hometown', $any($event.target).value)">
+              </div>
+            </div>
+          </div>
+        }
+
+        <!-- STEP 2: Academic -->
+        @if (currentStep() === 'academic') {
+          <div class="form-section">
+            <div class="section-title">Thông tin học tập</div>
+            <div class="form-grid">
+
+              <div class="form-field" [class.has-error]="getError('studentId')">
+                <label>Mã sinh viên <span class="required">*</span></label>
+                <input type="text" placeholder="SV2024001"
+                  [value]="form().studentId"
+                  (input)="updateField('studentId', $any($event.target).value)">
+                @if (getError('studentId')) { <span class="error-msg">{{ getError('studentId') }}</span> }
+              </div>
+
+              <div class="form-field" [class.has-error]="getError('faculty')">
+                <label>Khoa <span class="required">*</span></label>
+                <select [value]="form().faculty" (change)="updateField('faculty', $any($event.target).value)">
+                  <option value="">-- Chọn khoa --</option>
+                  @for (f of faculties; track f) {
+                    <option [value]="f">{{ f }}</option>
+                  }
+                </select>
+                @if (getError('faculty')) { <span class="error-msg">{{ getError('faculty') }}</span> }
+              </div>
+
+              <div class="form-field" [class.has-error]="getError('major')">
+                <label>Ngành học <span class="required">*</span></label>
+                <select [value]="form().major" (change)="updateField('major', $any($event.target).value)"
+                  [disabled]="!form().faculty">
+                  <option value="">-- Chọn ngành --</option>
+                  @for (m of availableMajors(); track m) {
+                    <option [value]="m">{{ m }}</option>
+                  }
+                </select>
+                @if (getError('major')) { <span class="error-msg">{{ getError('major') }}</span> }
+              </div>
+
+              <div class="form-field">
+                <label>Khoá</label>
+                <input type="text" placeholder="K2024"
+                  [value]="form().course"
+                  (input)="updateField('course', $any($event.target).value)">
+              </div>
+
+              <div class="form-field" [class.has-error]="getError('classId')">
+                <label>Lớp <span class="required">*</span></label>
+                <input type="text" placeholder="SE24A"
+                  [value]="form().classId"
+                  (input)="updateField('classId', $any($event.target).value)">
+                @if (getError('classId')) { <span class="error-msg">{{ getError('classId') }}</span> }
+              </div>
+
+              <div class="form-field">
+                <label>Cố vấn học tập</label>
+                <input type="text" placeholder="TS. Nguyễn Văn X"
+                  [value]="form().advisor"
+                  (input)="updateField('advisor', $any($event.target).value)">
+              </div>
+
+              <div class="form-field">
+                <label>Ngày nhập học</label>
+                <input type="date" [value]="form().enrollDate" (input)="updateField('enrollDate', $any($event.target).value)">
+              </div>
+
+              <div class="form-field">
+                <label>Trạng thái</label>
+                <select [value]="form().status" (change)="updateField('status', $any($event.target).value)">
+                  <option>Đang học</option>
+                  <option>Bảo lưu</option>
+                  <option>Tốt nghiệp</option>
+                  <option>Thôi học</option>
+                </select>
+              </div>
+
+            </div>
+          </div>
+        }
+
+        <!-- STEP 3: Account -->
+        @if (currentStep() === 'account') {
+          <div class="form-section">
+            <div class="section-title">Thông tin tài khoản</div>
+            <div class="form-grid">
+
+              <div class="form-field full-col">
+                <label>Tên đăng nhập</label>
+                <input type="text" [placeholder]="form().studentId || 'Mã sinh viên'"
+                  [value]="form().username || form().studentId"
+                  (input)="updateField('username', $any($event.target).value)">
+                <span class="field-hint">Để trống sẽ dùng mã sinh viên làm tên đăng nhập</span>
+              </div>
+
+              <div class="form-field" [class.has-error]="getError('password')">
+                <label>Mật khẩu <span class="required">*</span></label>
+                <input type="password" placeholder="Tối thiểu 8 ký tự"
+                  [value]="form().password"
+                  (input)="updateField('password', $any($event.target).value)">
+                @if (getError('password')) { <span class="error-msg">{{ getError('password') }}</span> }
+              </div>
+
+              <div class="form-field" [class.has-error]="getError('confirmPassword')">
+                <label>Xác nhận mật khẩu <span class="required">*</span></label>
+                <input type="password" placeholder="Nhập lại mật khẩu"
+                  [value]="form().confirmPassword"
+                  (input)="updateField('confirmPassword', $any($event.target).value)">
+                @if (getError('confirmPassword')) { <span class="error-msg">{{ getError('confirmPassword') }}</span> }
+              </div>
+
+            </div>
+          </div>
+
+          <!-- Summary -->
+          <div class="summary-card">
+            <div class="summary-title">Xem lại thông tin</div>
+            <div class="summary-grid">
+              <div class="summary-item">
+                <span class="s-label">Họ tên</span>
+                <span class="s-value">{{ form().fullName || '—' }}</span>
+              </div>
+              <div class="summary-item">
+                <span class="s-label">Mã sinh viên</span>
+                <span class="s-value">{{ form().studentId || '—' }}</span>
+              </div>
+              <div class="summary-item">
+                <span class="s-label">Ngành</span>
+                <span class="s-value">{{ form().major || '—' }}</span>
+              </div>
+              <div class="summary-item">
+                <span class="s-label">Lớp</span>
+                <span class="s-value">{{ form().classId || '—' }}</span>
+              </div>
+              <div class="summary-item">
+                <span class="s-label">Email</span>
+                <span class="s-value">{{ form().email || '—' }}</span>
+              </div>
+              <div class="summary-item">
+                <span class="s-label">Trạng thái</span>
+                <span class="s-value">{{ form().status }}</span>
+              </div>
+            </div>
+          </div>
+        }
+
+        <!-- Navigation Buttons -->
+        <div class="form-nav">
+          @if (currentStepIndex() > 0) {
+            <button class="btn-back" (click)="prevStep()">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <polyline points="15 18 9 12 15 6"/>
+              </svg>
+              Quay lại
+            </button>
+          } @else {
+            <div></div>
+          }
+
+          @if (currentStepIndex() < steps.length - 1) {
+            <button class="btn-next" (click)="nextStep()">
+              Tiếp theo
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <polyline points="9 18 15 12 9 6"/>
+              </svg>
+            </button>
+          } @else {
+            <button class="btn-submit" (click)="onSubmit()" [disabled]="isSaving()">
+              @if (isSaving()) {
+                <span class="btn-spinner"></span> Đang lưu...
+              } @else {
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <polyline points="20 6 9 17 4 12"/>
+                </svg>
+                {{ isEditMode() ? 'Cập nhật' : 'Tạo sinh viên' }}
+              }
+            </button>
+          }
+        </div>
+
+      </div><!-- end form-panel -->
+
+    </main>
+  </div>
+</div>
+
+@if (isSaving()) {
+  <app-loading-spinner [overlay]="true" message="Đang lưu dữ liệu..."></app-loading-spinner>
+}
