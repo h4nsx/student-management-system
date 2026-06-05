@@ -1,1 +1,145 @@
-<p>document-list works!</p>
+<div class="app-shell">
+  <app-navbar></app-navbar>
+  <div class="app-body">
+    <app-sidebar></app-sidebar>
+    <main class="main-content">
+      <div class="page-header">
+        <div>
+          <h1 class="page-title">Tài liệu học tập</h1>
+          <p class="page-subtitle">Quản lý tài liệu môn học, biểu mẫu và quy định nhà trường</p>
+        </div>
+      </div>
+
+      <div class="doc-controls">
+        <div class="search-box">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/>
+          </svg>
+          <input type="text" placeholder="Tìm kiếm tài liệu, môn học..."
+            [value]="searchQuery()"
+            (input)="searchQuery.set($any($event.target).value)">
+        </div>
+
+        <div class="filter-tabs">
+          <button [class.active]="filterType() === 'all'" (click)="filterType.set('all')">Tất cả</button>
+          <button [class.active]="filterType() === 'course_material'" (click)="filterType.set('course_material')">Tài liệu môn học</button>
+          <button [class.active]="filterType() === 'class_document'" (click)="filterType.set('class_document')">Tài liệu lớp</button>
+          <button [class.active]="filterType() === 'university_document'" (click)="filterType.set('university_document')">Quy định</button>
+          <button [class.active]="filterType() === 'form'" (click)="filterType.set('form')">Biểu mẫu</button>
+        </div>
+      </div>
+
+      @if (isLoading()) {
+        <div class="state-container">
+          <app-loading-spinner></app-loading-spinner>
+        </div>
+      } @else if (filteredDocs().length === 0) {
+        <div class="state-container">
+          <svg class="empty-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+            <path d="M13 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V9z"/><polyline points="13 2 13 9 20 9"/>
+          </svg>
+          <p>Không tìm thấy tài liệu nào phù hợp.</p>
+        </div>
+      } @else {
+        <div class="doc-sections">
+
+          <!-- 1. Course Materials (Grouped) -->
+          @if ((filterType() === 'all' || filterType() === 'course_material') && groupedCourseMaterials().length > 0) {
+            <div class="doc-section">
+              <h2 class="section-title">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"/></svg>
+                Tài liệu môn học
+              </h2>
+              <div class="folder-grid">
+                @for (group of groupedCourseMaterials(); track group.course) {
+                  <div class="course-folder">
+                    <div class="folder-header">
+                      <div class="folder-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"/></svg></div>
+                      <h3>{{ group.course }}</h3>
+                    </div>
+                    <div class="file-list">
+                      @for (doc of group.docs; track doc.id) {
+                        <div class="file-item">
+                          <svg class="file-icon pdf-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>
+                          <a [routerLink]="['/documents', doc.id]" class="file-name">{{ doc.title }}</a>
+                          <a [href]="'http://localhost:5000' + doc.file_url" target="_blank" download class="file-action"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg></a>
+                        </div>
+                      }
+                    </div>
+                  </div>
+                }
+              </div>
+            </div>
+          }
+
+          <!-- 2. Class Documents -->
+          @if ((filterType() === 'all' || filterType() === 'class_document') && getDocsByType('class_document').length > 0) {
+            <div class="doc-section">
+              <h2 class="section-title">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+                Tài liệu sinh hoạt lớp
+              </h2>
+              <div class="list-grid">
+                @for (doc of getDocsByType('class_document'); track doc.id) {
+                  <div class="doc-card">
+                    <div class="doc-card-icon icon-emerald"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/><polyline points="10 9 9 9 8 9"/></svg></div>
+                    <div class="doc-card-info">
+                      <a [routerLink]="['/documents', doc.id]" class="doc-card-title">{{ doc.title }}</a>
+                      <span class="doc-card-meta">Lớp: {{ doc.class_name }}</span>
+                    </div>
+                    <a [href]="'http://localhost:5000' + doc.file_url" target="_blank" download class="btn-download"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg></a>
+                  </div>
+                }
+              </div>
+            </div>
+          }
+
+          <!-- 3. University Documents -->
+          @if ((filterType() === 'all' || filterType() === 'university_document') && getDocsByType('university_document').length > 0) {
+            <div class="doc-section">
+              <h2 class="section-title">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/></svg>
+                Quy định & Sổ tay
+              </h2>
+              <div class="list-grid">
+                @for (doc of getDocsByType('university_document'); track doc.id) {
+                  <div class="doc-card">
+                    <div class="doc-card-icon icon-indigo"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="12 2 2 7 12 12 22 7 12 2"/><polyline points="2 17 12 22 22 17"/><polyline points="2 12 12 17 22 12"/></svg></div>
+                    <div class="doc-card-info">
+                      <a [routerLink]="['/documents', doc.id]" class="doc-card-title">{{ doc.title }}</a>
+                      <span class="doc-card-meta">Cấp trường</span>
+                    </div>
+                    <a [href]="'http://localhost:5000' + doc.file_url" target="_blank" download class="btn-download"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg></a>
+                  </div>
+                }
+              </div>
+            </div>
+          }
+
+          <!-- 4. Forms -->
+          @if ((filterType() === 'all' || filterType() === 'form') && getDocsByType('form').length > 0) {
+            <div class="doc-section">
+              <h2 class="section-title">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"/><line x1="9" y1="9" x2="15" y2="9"/><line x1="9" y1="13" x2="15" y2="13"/><line x1="9" y1="17" x2="15" y2="17"/></svg>
+                Biểu mẫu học vụ
+              </h2>
+              <div class="list-grid">
+                @for (doc of getDocsByType('form'); track doc.id) {
+                  <div class="doc-card">
+                    <div class="doc-card-icon icon-rose"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"/><line x1="9" y1="9" x2="15" y2="9"/><line x1="9" y1="13" x2="15" y2="13"/><line x1="9" y1="17" x2="15" y2="17"/></svg></div>
+                    <div class="doc-card-info">
+                      <a [routerLink]="['/documents', doc.id]" class="doc-card-title">{{ doc.title }}</a>
+                      <span class="doc-card-meta">Biểu mẫu chung</span>
+                    </div>
+                    <a [href]="'http://localhost:5000' + doc.file_url" target="_blank" download class="btn-download"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg></a>
+                  </div>
+                }
+              </div>
+            </div>
+          }
+
+        </div>
+      }
+    </main>
+  </div>
+</div>

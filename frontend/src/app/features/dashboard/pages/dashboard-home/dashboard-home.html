@@ -9,163 +9,161 @@
           <h1 class="page-title">Dashboard</h1>
           <p class="page-date">{{ dateFormatted() }}</p>
         </div>
-        <div class="header-actions">
-          <button class="btn-secondary" routerLink="/students/profile">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-              <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/>
-              <circle cx="12" cy="7" r="4"/>
-            </svg>
-            Hồ sơ của tôi
-          </button>
-        </div>
       </div>
 
-      <!-- Stats Grid -->
-      <div class="stats-grid">
-        @for (stat of stats; track stat.label) {
-          <div class="stat-card" [class]="'stat-' + stat.color">
-            <div class="stat-icon">
-              @if (stat.icon === 'star') {
-                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                  <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/>
-                </svg>
-              }
-              @if (stat.icon === 'book') {
-                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                  <path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/>
-                  <path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/>
-                </svg>
-              }
-              @if (stat.icon === 'award') {
-                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                  <circle cx="12" cy="8" r="6"/><path d="M15.477 12.89L17 22l-5-3-5 3 1.523-9.11"/>
-                </svg>
-              }
-              @if (stat.icon === 'bell') {
-                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                  <path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/>
-                  <path d="M13.73 21a2 2 0 0 1-3.46 0"/>
-                </svg>
-              }
+      @if (isLoading()) {
+        <div class="loading-state">Đang tải dữ liệu...</div>
+      } @else {
+        <div class="dashboard-top">
+          <!-- Personal Summary Widget -->
+          <div class="dash-card widget-personal">
+            <div class="card-header">
+              <h3>Thông tin sinh viên</h3>
             </div>
-            <div class="stat-body">
-              <div class="stat-value">{{ stat.value }}</div>
-              <div class="stat-label">{{ stat.label }}</div>
-              <div class="stat-sub">{{ stat.sub }}</div>
-            </div>
-            @if (stat.trend > 0) {
-              <div class="stat-trend">+{{ stat.trend }}%</div>
-            }
-          </div>
-        }
-      </div>
-
-      <!-- Two column layout -->
-      <div class="dashboard-grid">
-        <!-- Schedule -->
-        <div class="dash-card">
-          <div class="card-header">
-            <h3>Lịch học hôm nay</h3>
-            <span class="card-badge">{{ schedule.length }} môn</span>
-          </div>
-          <div class="schedule-list">
-            @for (item of schedule; track item.subject) {
-              <div class="schedule-item">
-                <div class="schedule-time">{{ item.time }}</div>
-                <div class="schedule-info">
-                  <div class="schedule-subject">{{ item.subject }}</div>
-                  <div class="schedule-room">{{ item.room }}</div>
-                </div>
-                <span class="schedule-type" [class]="'type-' + item.type.toLowerCase()">{{ item.type }}</span>
+            <div class="personal-info">
+              <div class="info-item">
+                <span class="info-label">Họ và tên</span>
+                <span class="info-value">{{ studentName() }}</span>
               </div>
-            }
-          </div>
-        </div>
-
-        <!-- Activities -->
-        <div class="dash-card">
-          <div class="card-header">
-            <h3>Hoạt động gần đây</h3>
-            <a routerLink="/notifications" class="card-link">Xem tất cả</a>
-          </div>
-          <div class="activity-list">
-            @for (act of recentActivities; track act.title) {
-              <div class="activity-item">
-                <div class="activity-dot" [class]="'dot-' + act.type"></div>
-                <div class="activity-body">
-                  <div class="activity-title">{{ act.title }}</div>
-                  <div class="activity-desc">{{ act.desc }}</div>
-                </div>
-                <div class="activity-time">{{ act.time }}</div>
+              <div class="info-item">
+                <span class="info-label">Mã sinh viên</span>
+                <span class="info-value">{{ studentId() }}</span>
               </div>
-            }
+              <div class="info-item">
+                <span class="info-label">Khoa</span>
+                <span class="info-value">{{ faculty() }}</span>
+              </div>
+              <div class="info-item">
+                <span class="info-label">Ngành học</span>
+                <span class="info-value">{{ major() }}</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- Status & Completion -->
+          <div class="dash-card widget-status">
+            <div class="status-block">
+              <h3>Trạng thái xác thực</h3>
+              <div class="status-badge" [class]="'badge-' + verificationStatus()">
+                @if (verificationStatus() === 'verified') {
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg> Đã xác thực
+                } @else if (verificationStatus() === 'pending') {
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg> Đang chờ duyệt
+                } @else {
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="15" y1="9" x2="9" y2="15"/><line x1="9" y1="9" x2="15" y2="15"/></svg> Đã từ chối
+                }
+              </div>
+            </div>
+
+            <div class="completion-block">
+              <div class="completion-header">
+                <h3>Hoàn thiện hồ sơ</h3>
+                <span>{{ profileCompletion() }}%</span>
+              </div>
+              <div class="progress-bar">
+                <div class="progress-fill" [style.width]="profileCompletion() + '%'"></div>
+              </div>
+            </div>
           </div>
         </div>
-      </div>
 
-      <!-- Quick Actions -->
-      <div class="dash-card quick-actions-card">
-        <div class="card-header">
-          <h3>Truy cập nhanh</h3>
+        <div class="dashboard-middle" style="display: grid; grid-template-columns: 1fr 1fr; gap: 24px; margin-top: 24px;">
+          <!-- Today's Schedule -->
+          <div class="dash-card widget-schedule">
+            <div class="card-header">
+              <h3>Lịch học hôm nay</h3>
+            </div>
+            <div class="schedule-list">
+              @for (cls of todayClasses(); track cls.id) {
+                <div class="schedule-item">
+                  <div class="schedule-time">
+                    <span class="time-start">{{ cls.startTime }}</span>
+                    <span class="time-end">{{ cls.endTime }}</span>
+                  </div>
+                  <div class="schedule-info">
+                    <div class="class-name">{{ cls.subject }}</div>
+                    <div class="class-meta">Phòng: {{ cls.room }} | Tiết: {{ cls.period }}</div>
+                  </div>
+                  <div class="schedule-status" [class]="'status-' + cls.status">
+                    {{ cls.status === 'ongoing' ? 'Đang diễn ra' : (cls.status === 'upcoming' ? 'Sắp tới' : 'Đã xong') }}
+                  </div>
+                </div>
+              } @empty {
+                <div class="empty-state">Không có lịch học hôm nay.</div>
+              }
+            </div>
+          </div>
+
+          <!-- Upcoming Classes -->
+          <div class="dash-card widget-upcoming">
+            <div class="card-header">
+              <h3>Lớp học sắp tới</h3>
+              <a href="#" class="card-link">Xem thời khóa biểu</a>
+            </div>
+            <div class="upcoming-list">
+              @for (cls of upcomingClasses(); track cls.id) {
+                <div class="upcoming-item">
+                  <div class="upcoming-date">
+                    <span class="date-day">{{ cls.dateDay }}</span>
+                    <span class="date-month">{{ cls.dateMonth }}</span>
+                  </div>
+                  <div class="upcoming-info">
+                    <div class="class-name">{{ cls.subject }}</div>
+                    <div class="class-meta">{{ cls.time }} | Phòng: {{ cls.room }}</div>
+                  </div>
+                </div>
+              } @empty {
+                <div class="empty-state">Không có lớp học sắp tới.</div>
+              }
+            </div>
+          </div>
         </div>
-        <div class="quick-grid">
-          <a class="quick-item" routerLink="/students/profile">
-            <div class="quick-icon qi-indigo">
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/>
-                <circle cx="12" cy="7" r="4"/>
-              </svg>
+
+        <div class="dashboard-grid" style="margin-top: 24px;">
+          <!-- Quick Access -->
+          <div class="dash-card widget-quick">
+            <div class="card-header">
+              <h3>Truy cập nhanh</h3>
             </div>
-            <span>Hồ sơ</span>
-          </a>
-          <a class="quick-item" routerLink="/students/detail">
-            <div class="quick-icon qi-violet">
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/>
-                <polyline points="14 2 14 8 20 8"/>
-              </svg>
+            <div class="quick-links">
+              <a routerLink="/students/profile" class="quick-btn">
+                <div class="icon-wrap indigo"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg></div>
+                <span>Hồ sơ cá nhân</span>
+              </a>
+              <a routerLink="/documents" class="quick-btn">
+                <div class="icon-wrap emerald"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/><polyline points="10 9 9 9 8 9"/></svg></div>
+                <span>Tài liệu & Xác thực</span>
+              </a>
+              <a routerLink="/qr-card" class="quick-btn">
+                <div class="icon-wrap rose"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/></svg></div>
+                <span>QR Card sinh viên</span>
+              </a>
             </div>
-            <span>Thông tin</span>
-          </a>
-          <a class="quick-item" routerLink="/documents">
-            <div class="quick-icon qi-emerald">
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                <path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"/>
-              </svg>
+          </div>
+
+          <!-- Notifications -->
+          <div class="dash-card widget-notifications">
+            <div class="card-header">
+              <h3>Thông báo mới</h3>
+              <a routerLink="/notifications" class="card-link">Xem tất cả</a>
             </div>
-            <span>Tài liệu</span>
-          </a>
-          <a class="quick-item" routerLink="/notifications">
-            <div class="quick-icon qi-amber">
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                <path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/>
-                <path d="M13.73 21a2 2 0 0 1-3.46 0"/>
-              </svg>
+            <div class="notif-list">
+              @for (notif of notifications(); track notif.title) {
+                <div class="notif-item" [style.opacity]="notif.is_read ? '0.6' : '1'">
+                  <div class="notif-dot" [class]="'dot-' + notif.type"></div>
+                  <div class="notif-content">
+                    <div class="notif-title">{{ notif.title }}</div>
+                    <div class="notif-message">{{ notif.message }}</div>
+                  </div>
+                  <div class="notif-time">{{ notif.time }}</div>
+                </div>
+              } @empty {
+                <div class="empty-state">Không có thông báo nào.</div>
+              }
             </div>
-            <span>Thông báo</span>
-          </a>
-          <a class="quick-item" routerLink="/qr-card">
-            <div class="quick-icon qi-rose">
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                <rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/>
-                <rect x="14" y="14" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/>
-              </svg>
-            </div>
-            <span>QR Card</span>
-          </a>
-          <a class="quick-item" routerLink="/students/list">
-            <div class="quick-icon qi-sky">
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/>
-                <circle cx="9" cy="7" r="4"/>
-                <path d="M23 21v-2a4 4 0 0 0-3-3.87"/>
-                <path d="M16 3.13a4 4 0 0 1 0 7.75"/>
-              </svg>
-            </div>
-            <span>DS Sinh viên</span>
-          </a>
+          </div>
         </div>
-      </div>
+      }
     </main>
   </div>
 </div>

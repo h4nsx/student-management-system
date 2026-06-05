@@ -89,7 +89,7 @@
           <input type="checkbox" [checked]="rememberMe()" (change)="rememberMe.update(v => !v)">
           <span>Ghi nhớ đăng nhập</span>
         </label>
-        <a routerLink="/auth/forgot-password" class="forgot-link">Quên mật khẩu?</a>
+        <a routerLink="/forgot-password" class="forgot-link">Quên mật khẩu?</a>
       </div>
 
       <button class="btn-submit" (click)="onSubmit()" [disabled]="isLoading()">
@@ -101,10 +101,10 @@
         }
       </button>
 
-      <p class="register-link">
-        Chưa có tài khoản?
-        <a routerLink="/auth/register">Đăng ký ngay</a>
-      </p>
+      <button class="btn-submit" type="button" (click)="fillDemo()" style="margin-top: 10px; background: #e0e7ff; color: #4338ca;">
+        Điền tài khoản Demo
+      </button>
+
     </div>
   </div>
 </div>

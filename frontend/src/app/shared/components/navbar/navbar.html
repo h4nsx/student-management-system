@@ -15,7 +15,7 @@
 
   <div class="navbar-center">
     <div class="greeting-badge">
-      <span class="greeting-text">{{ greeting() }}, <strong>{{ currentUser().name.split(' ').slice(-1)[0] }}</strong></span>
+      <span class="greeting-text">{{ greeting() }}, <strong>{{ firstName() }}</strong></span>
     </div>
   </div>
 
@@ -51,7 +51,7 @@
       </button>
 
       @if (isProfileMenuOpen()) {
-        <div class="profile-dropdown" (clickOutside)="closeProfileMenu()">
+        <div class="profile-dropdown">
           <div class="dropdown-header">
             <div class="dropdown-avatar">{{ avatarInitials() }}</div>
             <div>

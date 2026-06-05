@@ -1,1 +1,152 @@
-<p>qr-card-page works!</p>
+<div class="app-shell">
+  <app-navbar class="no-print"></app-navbar>
+  <div class="app-body">
+    <app-sidebar class="no-print"></app-sidebar>
+    <main class="main-content">
+      
+      <div class="page-header no-print">
+        <div>
+          <h1 class="page-title">Thẻ sinh viên điện tử</h1>
+          <p class="page-subtitle">Sử dụng mã QR này để điểm danh và ra vào khuôn viên trường</p>
+        </div>
+        <div class="header-actions">
+          <button class="btn-secondary" (click)="downloadCard()">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+            Tải ảnh (PNG)
+          </button>
+          <button class="btn-primary" (click)="printCard()">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 6 2 18 2 18 9"/><path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"/><rect x="6" y="14" width="12" height="8"/></svg>
+            In thẻ
+          </button>
+        </div>
+      </div>
+
+      @if (isLoading()) {
+        <div class="state-container no-print">
+          <app-loading-spinner></app-loading-spinner>
+        </div>
+      } @else if (studentInfo()) {
+        <div class="qr-grid">
+          
+          <!-- Left: The Digital Card -->
+          <div class="card-section">
+            <div class="student-card" id="student-card">
+              <div class="card-header">
+                <div class="uni-logo">
+                  <div class="uni-logo-icon">E</div>
+                  <div class="uni-logo-text">EduTrack<br><span>University</span></div>
+                </div>
+                <div class="card-title">THẺ SINH VIÊN</div>
+              </div>
+
+              <div class="card-body">
+                <div class="card-avatar">
+                  <img [src]="studentInfo().avatar_url ? ('http://localhost:5000' + studentInfo().avatar_url) : 'assets/images/default-avatar.png'" alt="Avatar">
+                </div>
+                
+                <div class="card-details">
+                  <h2 class="student-name">{{ studentInfo().full_name }}</h2>
+                  
+                  <div class="detail-row">
+                    <span class="label">MSSV:</span>
+                    <span class="value">{{ studentInfo().student_code }}</span>
+                  </div>
+                  <div class="detail-row">
+                    <span class="label">Khoa:</span>
+                    <span class="value">{{ studentInfo().faculty_name || 'Chưa cập nhật' }}</span>
+                  </div>
+                  <div class="detail-row">
+                    <span class="label">Lớp:</span>
+                    <span class="value">{{ studentInfo().class_name || 'Chưa cập nhật' }}</span>
+                  </div>
+                  
+                  <div class="status-badge" [class.verified]="studentInfo().student_status === 'verified'">
+                    @if (studentInfo().student_status === 'verified') {
+                      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>
+                      Đã xác thực danh tính
+                    } @else {
+                      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
+                      Chưa xác thực
+                    }
+                  </div>
+                </div>
+              </div>
+
+              <div class="card-qr">
+                @if (qrToken()) {
+                  <img [src]="'https://quickchart.io/qr?size=160&text=' + qrToken()" alt="QR Code" class="qr-image">
+                } @else {
+                  <div class="qr-image" style="display: flex; align-items: center; justify-content: center; background: rgba(99, 102, 241, 0.05); border-radius: 8px;">
+                    <app-loading-spinner size="sm"></app-loading-spinner>
+                  </div>
+                }
+                <div class="qr-status active">
+                  <span class="pulse-dot"></span>
+                  Mã QR Đang hoạt động
+                </div>
+                <div class="qr-hint">Đưa mã này vào máy quét để điểm danh</div>
+              </div>
+            </div>
+
+            <button class="btn-refresh no-print" (click)="refreshQr()">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="23 4 23 10 17 10"/><polyline points="1 20 1 14 7 14"/><path d="M3.51 9a9 9 0 0 1 14.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0 0 20.49 15"/></svg>
+              Làm mới mã QR
+            </button>
+          </div>
+
+          <!-- Right: Information & History -->
+          <div class="info-section no-print">
+            <div class="info-card">
+              <h3>Thông tin thẻ</h3>
+              <div class="info-list">
+                <div class="info-item">
+                  <span class="info-label">Trạng thái mã QR</span>
+                  <span class="info-value status-active">Đang hoạt động</span>
+                </div>
+                <div class="info-item">
+                  <span class="info-label">Hết hạn vào</span>
+                  <span class="info-value">{{ qrExpiresAt() | date:'dd/MM/yyyy' }}</span>
+                </div>
+                <div class="info-item">
+                  <span class="info-label">Khóa tuyển sinh</span>
+                  <span class="info-value">{{ studentInfo().cohort || 'Chưa cập nhật' }}</span>
+                </div>
+                <div class="info-item">
+                  <span class="info-label">Hệ đào tạo</span>
+                  <span class="info-value">{{ studentInfo().training_system || 'Chính quy' }}</span>
+                </div>
+              </div>
+            </div>
+
+            <div class="info-card">
+              <h3>Lịch sử quét mã</h3>
+              @if (scanHistory().length === 0) {
+                <div class="empty-history">
+                  <p>Chưa có lịch sử quét mã nào.</p>
+                </div>
+              } @else {
+                <div class="timeline">
+                  @for (log of scanHistory(); track log.created_at) {
+                    <div class="timeline-item">
+                      <div class="timeline-dot" [class.success]="log.status_result === 'success'"></div>
+                      <div class="timeline-content">
+                        <div class="timeline-header">
+                          <span class="timeline-location">{{ log.location }}</span>
+                          <span class="timeline-time">{{ log.created_at | date:'HH:mm dd/MM' }}</span>
+                        </div>
+                        <div class="timeline-status" [class.text-success]="log.status_result === 'success'" [class.text-error]="log.status_result !== 'success'">
+                          {{ log.status_result === 'success' ? 'Thành công' : 'Thất bại' }}
+                        </div>
+                      </div>
+                    </div>
+                  }
+                </div>
+              }
+            </div>
+          </div>
+        </div>
+      }
+
+    </main>
+  </div>
+</div>

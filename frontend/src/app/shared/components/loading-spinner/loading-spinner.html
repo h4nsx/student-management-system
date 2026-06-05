@@ -1,7 +1,12 @@
 <div class="spinner-wrapper" [class.overlay]="overlay()" [class]="'size-' + size()">
-  <div class="spinner-ring">
-    <div class="spinner-track"></div>
-    <div class="spinner-fill"></div>
+  <div class="scanner-container">
+    <div class="scanner-corners">
+      <div class="corner top-left"></div>
+      <div class="corner top-right"></div>
+      <div class="corner bottom-left"></div>
+      <div class="corner bottom-right"></div>
+    </div>
+    <div class="scanner-laser"></div>
   </div>
   @if (message()) {
     <p class="spinner-message">{{ message() }}</p>

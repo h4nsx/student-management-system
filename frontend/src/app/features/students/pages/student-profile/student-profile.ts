@@ -1,8 +1,10 @@
-import { Component, signal, computed } from '@angular/core';
+import { Component, signal, computed, inject, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterModule } from '@angular/router';
+import { HttpClient } from '@angular/common/http';
 import { Navbar } from '../../../../shared/components/navbar/navbar';
 import { Sidebar } from '../../../../shared/components/sidebar/sidebar';
+import { AuthService } from '../../../../core/services/auth.service';
 
 @Component({
   selector: 'app-student-profile',
@@ -11,46 +13,65 @@ import { Sidebar } from '../../../../shared/components/sidebar/sidebar';
   templateUrl: './student-profile.html',
   styleUrl: './student-profile.css'
 })
-export class StudentProfile {
-  student = signal({
-    fullName: 'Nguyễn Văn An',
-    studentId: 'SV2021001',
-    email: 'nguyenvanan@university.edu.vn',
-    phone: '0901234567',
-    dob: '15/03/2003',
-    gender: 'Nam',
-    hometown: 'TP. Hồ Chí Minh',
-    avatar: null as string | null,
-    faculty: 'Khoa Công nghệ Thông tin',
-    major: 'Kỹ thuật Phần mềm',
-    course: 'K2021',
-    classId: 'SE21A',
-    advisor: 'TS. Trần Văn Bình',
-    status: 'Đang học',
-    gpa: 3.45,
-    credits: 87,
-    conduct: 82,
-  });
+export class StudentProfile implements OnInit {
+  private http = inject(HttpClient);
+  private authService: AuthService = inject(AuthService);
 
-  activeTab = signal<'personal' | 'academic'>('personal');
+  student = signal<any>({});
+  user = signal<any>({});
+  isLoading = signal(true);
+
+  ngOnInit() {
+    this.authService.getCurrentUser().subscribe({
+      next: (res: any) => {
+        if (res.data) {
+          this.user.set(res.data);
+          if (res.data.email === 'demo@example.com') {
+            this.loadMockData();
+          } else {
+            this.loadRealProfile();
+          }
+        }
+      },
+      error: () => this.loadMockData()
+    });
+  }
+
+  loadRealProfile() {
+    this.http.get<any>('http://localhost:5000/api/students/profile').subscribe({
+      next: (res) => {
+        this.student.set(res.data);
+        this.isLoading.set(false);
+      },
+      error: (err) => {
+        console.error(err);
+        this.isLoading.set(false);
+      }
+    });
+  }
+
+  loadMockData() {
+    this.user.set({ email: 'demo@example.com', status: 'active', role: 'student' });
+    this.student.set({
+      full_name: 'Nguyễn Văn An',
+      student_code: 'SV2021001',
+      dob: '2003-03-15',
+      gender: 'Nam',
+      nationality: 'Việt Nam',
+      phone: '0901234567',
+      permanent_address: '123 Nguyễn Văn Linh, TP.HCM',
+      avatar_url: null,
+      faculty_name: 'Khoa Công nghệ Thông tin',
+      major: 'Kỹ thuật Phần mềm',
+      class: 'SE21A',
+      enrollment_year: '2021',
+      student_status: 'verified'
+    });
+    this.isLoading.set(false);
+  }
 
   initials = computed(() => {
-    return this.student().fullName.split(' ').map(n => n[0]).slice(-2).join('').toUpperCase();
-  });
-
-  gpaClass = computed(() => {
-    const g = this.student().gpa;
-    if (g >= 3.6) return 'excellent';
-    if (g >= 3.2) return 'good';
-    if (g >= 2.5) return 'average';
-    return 'weak';
-  });
-
-  gpaLabel = computed(() => {
-    const g = this.student().gpa;
-    if (g >= 3.6) return 'Xuất sắc';
-    if (g >= 3.2) return 'Giỏi';
-    if (g >= 2.5) return 'Khá';
-    return 'Trung bình';
+    const name = this.student().full_name || 'A';
+    return name.split(' ').map((n: string) => n[0]).slice(-2).join('').toUpperCase();
   });
 }

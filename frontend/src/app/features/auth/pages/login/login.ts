@@ -3,6 +3,7 @@ import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { Router, RouterModule } from '@angular/router';
 import { inject } from '@angular/core';
+import { AuthService } from '../../../../core/services/auth.service';
 
 @Component({
   selector: 'app-login',
@@ -13,6 +14,7 @@ import { inject } from '@angular/core';
 })
 export class Login {
   private router = inject(Router);
+  private authService = inject(AuthService);
 
   studentId = signal('');
   password = signal('');
@@ -21,16 +23,29 @@ export class Login {
   isLoading = signal(false);
   errorMessage = signal('');
 
-  async onSubmit() {
+  fillDemo() {
+    this.studentId.set('demo@example.com');
+    this.password.set('password123');
+  }
+
+  onSubmit() {
     if (!this.studentId() || !this.password()) {
       this.errorMessage.set('Vui lòng nhập đầy đủ thông tin.');
       return;
     }
     this.isLoading.set(true);
     this.errorMessage.set('');
-    // Simulate API call
-    await new Promise(r => setTimeout(r, 1500));
-    this.isLoading.set(false);
-    this.router.navigate(['/dashboard']);
+    
+    this.authService.login({ email: this.studentId(), password: this.password() })
+      .subscribe({
+        next: () => {
+          this.isLoading.set(false);
+          this.router.navigate(['/dashboard']);
+        },
+        error: (err) => {
+          this.isLoading.set(false);
+          this.errorMessage.set(err.error?.message || 'Đăng nhập thất bại. Vui lòng kiểm tra lại thông tin.');
+        }
+      });
   }
 }

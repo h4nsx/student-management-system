@@ -1,0 +1,82 @@
+<div class="app-shell">
+  <app-navbar></app-navbar>
+  <div class="app-body">
+    <app-sidebar></app-sidebar>
+    <main class="main-content">
+      <div class="page-header">
+        <div>
+          <h1 class="page-title">Lớp học của tôi</h1>
+          <p class="page-subtitle">Quản lý và xem thông tin các lớp học phần đang đăng ký</p>
+        </div>
+      </div>
+
+      @if (isLoading()) {
+        <div class="state-container">
+          <app-loading-spinner></app-loading-spinner>
+        </div>
+      } @else if (classes().length === 0) {
+        <div class="state-container empty-state">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
+          <p>Bạn chưa đăng ký lớp học nào trong học kỳ này.</p>
+        </div>
+      } @else {
+        <div class="class-grid">
+          @for (course of classes(); track course.id) {
+            <a [routerLink]="['/classes', course.id]" class="class-card" [class.ended]="course.isEnded">
+              <div class="card-header">
+                <div class="course-code">{{ course.code }}</div>
+                @if (course.isEnded) {
+                  <div class="status-badge ended">Đã kết thúc</div>
+                } @else {
+                  <div class="status-badge active">Còn {{ course.weeksLeft }} tuần</div>
+                }
+              </div>
+              
+              <h2 class="course-name">{{ course.name }}</h2>
+              
+              <div class="course-details">
+                <div class="detail-item">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+                  <span>{{ course.lecturer || 'Chưa xếp' }}</span>
+                </div>
+                <div class="detail-item">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+                  <span [class.strikethrough]="course.isEnded">{{ course.schedule || 'Chưa có lịch' }}</span>
+                </div>
+                <div class="detail-item">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
+                  <span>{{ course.room || 'Chưa xếp phòng' }}</span>
+                </div>
+              </div>
+            </a>
+          }
+        </div>
+
+        <!-- Weekly Timetable -->
+        <div class="timetable-section">
+          <h2 class="section-title">Thời khóa biểu trong tuần</h2>
+          <div class="timetable-grid">
+            @for (dayEntries of timetable(); track $index) {
+              <div class="timetable-column">
+                <div class="timetable-header">{{ timetableDays[$index] }}</div>
+                <div class="timetable-content">
+                  @if (dayEntries.length === 0) {
+                    <div class="empty-day">Trống</div>
+                  } @else {
+                    @for (entry of dayEntries; track entry.courseCode) {
+                      <div class="timetable-card">
+                        <div class="time-periods">{{ entry.timeString }} (Tiết {{ entry.periods }})</div>
+                        <div class="tt-course">{{ entry.courseName }}</div>
+                        <div class="tt-room">Phòng: {{ entry.room }}</div>
+                      </div>
+                    }
+                  }
+                </div>
+              </div>
+            }
+          </div>
+        </div>
+      }
+    </main>
+  </div>
+</div>

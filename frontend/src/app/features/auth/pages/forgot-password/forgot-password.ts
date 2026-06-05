@@ -2,6 +2,8 @@ import { Component, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { RouterModule } from '@angular/router';
+import { inject } from '@angular/core';
+import { AuthService } from '../../../../core/services/auth.service';
 
 @Component({
   selector: 'app-forgot-password',
@@ -11,21 +13,31 @@ import { RouterModule } from '@angular/router';
   styleUrl: './forgot-password.css'
 })
 export class ForgotPassword {
+  private authService = inject(AuthService);
+
   email = signal('');
   isLoading = signal(false);
   isSent = signal(false);
   errorMessage = signal('');
 
-  async onSubmit() {
+  onSubmit() {
     if (!this.email()) {
       this.errorMessage.set('Vui lòng nhập email.');
       return;
     }
     this.isLoading.set(true);
     this.errorMessage.set('');
-    await new Promise(r => setTimeout(r, 1500));
-    this.isLoading.set(false);
-    this.isSent.set(true);
+    
+    this.authService.forgotPassword(this.email()).subscribe({
+      next: () => {
+        this.isLoading.set(false);
+        this.isSent.set(true);
+      },
+      error: (err) => {
+        this.isLoading.set(false);
+        this.errorMessage.set(err.error?.message || 'Có lỗi xảy ra, vui lòng thử lại.');
+      }
+    });
   }
 
   resend() {
