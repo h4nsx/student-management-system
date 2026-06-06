@@ -26,14 +26,10 @@ export class StudentProfile implements OnInit {
       next: (res: any) => {
         if (res.data) {
           this.user.set(res.data);
-          if (res.data.email === 'demo@example.com') {
-            this.loadMockData();
-          } else {
-            this.loadRealProfile();
-          }
+          this.loadRealProfile();
         }
       },
-      error: () => this.loadMockData()
+      error: () => this.loadRealProfile()
     });
   }
 
@@ -50,25 +46,7 @@ export class StudentProfile implements OnInit {
     });
   }
 
-  loadMockData() {
-    this.user.set({ email: 'demo@example.com', status: 'active', role: 'student' });
-    this.student.set({
-      full_name: 'Nguyễn Văn An',
-      student_code: 'SV2021001',
-      dob: '2003-03-15',
-      gender: 'Nam',
-      nationality: 'Việt Nam',
-      phone: '0901234567',
-      permanent_address: '123 Nguyễn Văn Linh, TP.HCM',
-      avatar_url: null,
-      faculty_name: 'Khoa Công nghệ Thông tin',
-      major: 'Kỹ thuật Phần mềm',
-      class: 'SE21A',
-      enrollment_year: '2021',
-      student_status: 'verified'
-    });
-    this.isLoading.set(false);
-  }
+
 
   initials = computed(() => {
     const name = this.student().full_name || 'A';

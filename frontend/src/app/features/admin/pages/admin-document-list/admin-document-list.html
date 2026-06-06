@@ -1,0 +1,94 @@
+<div class="app-shell">
+  <app-navbar></app-navbar>
+  <div class="app-body">
+    <app-sidebar></app-sidebar>
+    <main class="main-content">
+      
+      <div class="page-header">
+        <div>
+          <h1 class="page-title">Quản lý Tài liệu</h1>
+          <p class="page-subtitle">Tài liệu học tập, quy định và thông báo chung</p>
+        </div>
+        <button class="btn-primary" routerLink="/admin/documents/upload">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>
+          Tải lên Tài liệu
+        </button>
+      </div>
+
+      <div class="toolbar">
+        <div class="search-box">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+          <input type="text" placeholder="Tìm theo tên tài liệu..." [value]="searchText()" (input)="searchText.set($any($event.target).value)" (keyup.enter)="onSearch()">
+        </div>
+        
+        <select [ngModel]="filterType()" (ngModelChange)="onFilterChange($event)" class="filter-select">
+          <option value="">Tất cả danh mục</option>
+          <option value="course_material">Tài liệu môn học</option>
+          <option value="class_document">Tài liệu lớp học</option>
+          <option value="university_document">Quy định Cao Đẳng</option>
+          <option value="form">Biểu mẫu</option>
+        </select>
+
+        <button class="btn-secondary" (click)="onSearch()">Tìm kiếm</button>
+      </div>
+
+      <div class="table-container">
+        @if (isLoading()) {
+          <div class="loading-state">Đang tải dữ liệu...</div>
+        } @else {
+          <table class="data-table">
+            <thead>
+              <tr>
+                <th>Tên Tài liệu</th>
+                <th>Danh mục</th>
+                <th>Phân quyền (Lớp)</th>
+                <th>Ngày tải lên</th>
+                <th>Thao tác</th>
+              </tr>
+            </thead>
+            <tbody>
+              @for (doc of documents(); track doc.id) {
+                <tr>
+                  <td class="bold">
+                    <div class="doc-title-cell">
+                      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>
+                      {{ doc.title }}
+                    </div>
+                  </td>
+                  <td><span class="badge">{{ getCategoryName(doc.type) }}</span></td>
+                  <td>{{ doc.class_name || 'Toàn trường' }}</td>
+                  <td>{{ doc.created_at | date:'dd/MM/yyyy' }}</td>
+                  <td class="actions">
+                    <a [href]="doc.file_url" target="_blank" class="btn-icon" title="Tải xuống/Xem">
+                      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+                    </a>
+                    <button class="btn-icon danger" (click)="confirmDelete(doc)" title="Xoá">
+                      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="3 6 5 6 21 6"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/></svg>
+                    </button>
+                  </td>
+                </tr>
+              }
+              @if (documents().length === 0) {
+                <tr><td colspan="5" class="empty-state">Không tìm thấy tài liệu nào.</td></tr>
+              }
+            </tbody>
+          </table>
+        }
+      </div>
+
+    </main>
+  </div>
+</div>
+
+@if (showDeleteConfirm()) {
+  <div class="modal-overlay">
+    <div class="modal-content">
+      <h3>Xác nhận xoá</h3>
+      <p>Bạn có chắc chắn muốn xoá tài liệu này không? Hành động này không thể hoàn tác.</p>
+      <div class="modal-actions">
+        <button class="btn-cancel" (click)="showDeleteConfirm.set(false)">Huỷ</button>
+        <button class="btn-danger" (click)="deleteDocument()">Xoá</button>
+      </div>
+    </div>
+  </div>
+}

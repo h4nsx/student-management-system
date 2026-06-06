@@ -33,15 +33,21 @@
             <div class="student-card" id="student-card">
               <div class="card-header">
                 <div class="uni-logo">
-                  <div class="uni-logo-icon">E</div>
-                  <div class="uni-logo-text">EduTrack<br><span>University</span></div>
+                  <div class="uni-logo-icon">H</div>
+                  <div class="uni-logo-text">HVCT<br><span>Cao Đẳng Kỹ Nghệ II</span></div>
                 </div>
                 <div class="card-title">THẺ SINH VIÊN</div>
               </div>
 
               <div class="card-body">
                 <div class="card-avatar">
-                  <img [src]="studentInfo().avatar_url ? ('http://localhost:5000' + studentInfo().avatar_url) : 'assets/images/default-avatar.png'" alt="Avatar">
+                  @if (studentInfo().avatar_url) {
+                    <img [src]="'http://localhost:5000' + studentInfo().avatar_url" alt="Avatar">
+                  } @else {
+                    <div class="avatar-placeholder">
+                      {{ avatarInitials() }}
+                    </div>
+                  }
                 </div>
                 
                 <div class="card-details">

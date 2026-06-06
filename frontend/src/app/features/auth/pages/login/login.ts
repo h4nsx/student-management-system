@@ -1,4 +1,4 @@
-import { Component, signal } from '@angular/core';
+import { Component, signal, isDevMode } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { Router, RouterModule } from '@angular/router';
@@ -22,10 +22,16 @@ export class Login {
   rememberMe = signal(false);
   isLoading = signal(false);
   errorMessage = signal('');
+  isDev = isDevMode();
 
   fillDemo() {
     this.studentId.set('demo@example.com');
     this.password.set('password123');
+  }
+
+  fillAdminDemo() {
+    this.studentId.set('admin@example.com');
+    this.password.set('admin123');
   }
 
   onSubmit() {
@@ -38,9 +44,17 @@ export class Login {
     
     this.authService.login({ email: this.studentId(), password: this.password() })
       .subscribe({
-        next: () => {
+        next: (res: any) => {
           this.isLoading.set(false);
-          this.router.navigate(['/dashboard']);
+          // Store role for fallback routing
+          if (res.user?.role) {
+            localStorage.setItem('userRole', res.user.role);
+          }
+          if (res.user && res.user.role === 'admin') {
+            this.router.navigate(['/admin/dashboard']);
+          } else {
+            this.router.navigate(['/dashboard']);
+          }
         },
         error: (err) => {
           this.isLoading.set(false);

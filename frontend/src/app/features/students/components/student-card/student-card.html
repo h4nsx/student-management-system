@@ -5,11 +5,11 @@
       {{ initials() }}
     </div>
     <div class="header-info">
-      <div class="student-name">{{ student().fullName }}</div>
-      <div class="student-id">{{ student().studentId }}</div>
+      <div class="student-name">{{ student().full_name }}</div>
+      <div class="student-id">{{ student().student_code }}</div>
     </div>
-    <span class="status-badge" [class]="'status-' + (student().status === 'Đang học' ? 'active' : 'paused')">
-      {{ student().status }}
+    <span class="status-badge" [class]="'status-' + (student().student_status === 'verified' ? 'active' : 'paused')">
+      {{ student().student_status === 'verified' ? 'Đã xác thực' : (student().student_status === 'unverified' ? 'Chưa xác thực' : 'Bị cấm') }}
     </span>
   </div>
 
@@ -33,7 +33,7 @@
           <circle cx="9" cy="7" r="4"/>
         </svg>
       </span>
-      <span class="info-text">Lớp {{ student().classId }}</span>
+      <span class="info-text">Lớp {{ student().class_name }}</span>
     </div>
     <div class="info-row">
       <span class="info-icon">
@@ -50,7 +50,7 @@
   <div class="card-footer">
     <div class="gpa-section">
       <span class="gpa-label">GPA</span>
-      <span class="gpa-value" [class]="'gpa-' + gpaClass()">{{ student().gpa }}</span>
+      <span class="gpa-value" [class]="'gpa-' + gpaClass()">{{ student().gpa || 'N/A' }}</span>
     </div>
     <div class="card-actions" (click)="$event.stopPropagation()">
       <button class="action-btn view-btn" (click)="view.emit(student())" title="Xem chi tiết">

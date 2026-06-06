@@ -1,0 +1,89 @@
+<div class="app-shell">
+  <app-navbar></app-navbar>
+  <div class="app-body">
+    <app-sidebar></app-sidebar>
+    <main class="main-content">
+      
+      <div class="page-header">
+        <a routerLink="/students/list" class="back-link">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="15 18 9 12 15 6"/></svg>
+          Quay lại danh sách
+        </a>
+        <h1 class="page-title">Thêm Sinh Viên Mới</h1>
+        <p class="page-subtitle">Tạo tài khoản và hồ sơ cho sinh viên</p>
+      </div>
+
+      <div class="form-container">
+        @if (errorMessage()) {
+          <div class="alert error">{{ errorMessage() }}</div>
+        }
+        @if (successMessage()) {
+          <div class="alert success">{{ successMessage() }}</div>
+        }
+
+        <div class="form-section">
+          <h2 class="section-title">Thông tin tài khoản (Bắt buộc)</h2>
+          <div class="form-grid">
+            <div class="form-group">
+              <label>Email đăng nhập</label>
+              <input type="email" [(ngModel)]="formData.email" placeholder="sv@uni.edu.vn">
+            </div>
+            <div class="form-group">
+              <label>Mật khẩu</label>
+              <input type="password" [(ngModel)]="formData.password" placeholder="Mật khẩu đăng nhập">
+            </div>
+            <div class="form-group">
+              <label>Họ và Tên</label>
+              <input type="text" [(ngModel)]="formData.full_name" placeholder="VD: Nguyễn Văn A">
+            </div>
+            <div class="form-group">
+              <label>Mã Sinh Viên (MSSV)</label>
+              <input type="text" [(ngModel)]="formData.student_code" placeholder="VD: 24110001">
+            </div>
+          </div>
+        </div>
+
+        <div class="form-section">
+          <h2 class="section-title">Hồ sơ cá nhân & Học tập</h2>
+          <div class="form-grid">
+            <div class="form-group">
+              <label>Ngày sinh</label>
+              <input type="date" [(ngModel)]="formData.dob">
+            </div>
+            <div class="form-group">
+              <label>Giới tính</label>
+              <select [(ngModel)]="formData.gender">
+                <option value="Nam">Nam</option>
+                <option value="Nữ">Nữ</option>
+              </select>
+            </div>
+            <div class="form-group">
+              <label>Số điện thoại</label>
+              <input type="text" [(ngModel)]="formData.phone" placeholder="09xxxx">
+            </div>
+            <div class="form-group">
+              <label>Địa chỉ</label>
+              <input type="text" [(ngModel)]="formData.address" placeholder="Địa chỉ hiện tại">
+            </div>
+            <div class="form-group">
+              <label>Ngành học (Major)</label>
+              <input type="text" [(ngModel)]="formData.major" placeholder="VD: Kỹ thuật phần mềm">
+            </div>
+            <div class="form-group">
+              <label>Lớp</label>
+              <input type="text" [(ngModel)]="formData.class_name" placeholder="VD: IT01">
+            </div>
+          </div>
+        </div>
+
+        <div class="form-actions">
+          <button class="btn-cancel" routerLink="/students/list">Huỷ</button>
+          <button class="btn-submit" (click)="onSubmit()" [disabled]="isLoading()">
+            @if (isLoading()) { Đang xử lý... } @else { Tạo Sinh Viên }
+          </button>
+        </div>
+      </div>
+
+    </main>
+  </div>
+</div>

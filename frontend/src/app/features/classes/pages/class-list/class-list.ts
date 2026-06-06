@@ -30,7 +30,6 @@ export class ClassList implements OnInit {
           const parsedTimetable: any[][] = [[], [], [], [], [], [], []];
 
           for (const c of res.data) {
-            // 15-week logic calculation
             const startDate = new Date(c.start_date || new Date());
             const totalWeeks = c.total_weeks || 15;
             const endDate = new Date(startDate);
@@ -42,31 +41,26 @@ export class ClassList implements OnInit {
             activeClasses.push(c);
 
             // Timetable logic (only if not ended)
-            if (!c.isEnded && c.schedule) {
-              const parts = c.schedule.split(',').map((s: string) => s.trim());
-              for (const p of parts) {
-                const match = p.match(/(Thu \d|Chu Nhat)\s*\(([^)]+)\)/i);
-                if (match) {
-                  const dayStr = match[1];
-                  const periods = match[2];
-                  let dayIndex = -1;
-                  if (dayStr === 'Thu 2') dayIndex = 0;
-                  else if (dayStr === 'Thu 3') dayIndex = 1;
-                  else if (dayStr === 'Thu 4') dayIndex = 2;
-                  else if (dayStr === 'Thu 5') dayIndex = 3;
-                  else if (dayStr === 'Thu 6') dayIndex = 4;
-                  else if (dayStr === 'Thu 7') dayIndex = 5;
-                  else if (dayStr === 'Chu Nhat') dayIndex = 6;
-                  
-                  if (dayIndex !== -1) {
-                    parsedTimetable[dayIndex].push({
-                      courseName: c.name,
-                      courseCode: c.code,
-                      room: c.room,
-                      periods: periods,
-                      timeString: this.getPeriodTime(periods)
-                    });
-                  }
+            if (!c.isEnded && c.schedules && c.schedules.length > 0) {
+              const dayMapRev: any = {
+                'Monday': 0, 'Thứ 2': 0,
+                'Tuesday': 1, 'Thứ 3': 1,
+                'Wednesday': 2, 'Thứ 4': 2,
+                'Thursday': 3, 'Thứ 5': 3,
+                'Friday': 4, 'Thứ 6': 4,
+                'Saturday': 5, 'Thứ 7': 5,
+                'Sunday': 6, 'Chủ nhật': 6
+              };
+
+              for (const sched of c.schedules) {
+                const dayIndex = dayMapRev[sched.day_of_week];
+                if (dayIndex !== undefined && dayIndex >= 0 && dayIndex <= 6) {
+                  parsedTimetable[dayIndex].push({
+                    courseName: c.class_name,
+                    courseCode: c.class_code,
+                    room: sched.room,
+                    timeString: `${sched.start_time.substring(0,5)} - ${sched.end_time.substring(0,5)}`
+                  });
                 }
               }
             }

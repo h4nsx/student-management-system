@@ -30,7 +30,12 @@
               <h1 class="hero-name">{{ student().full_name }}</h1>
               <div class="hero-meta">
                 <span class="meta-chip">{{ student().student_code }}</span>
-                <span class="meta-chip status-active">{{ student().student_status === 'verified' ? 'Đã xác thực' : 'Chưa xác thực' }}</span>
+                <span class="meta-chip status-active">{{ 
+                  student().student_status === 'verified' ? 'Đã xác thực' : 
+                  (student().student_status === 'studying' ? 'Đang học' : 
+                  (student().student_status === 'banned' ? 'Bị cấm' : 
+                  (student().student_status === 'graduated' ? 'Đã tốt nghiệp' : 'Chưa xác thực')))
+                }}</span>
               </div>
             </div>
           </div>
@@ -47,11 +52,11 @@
               </div>
               <div class="info-field">
                 <span class="field-label">Ngày sinh</span>
-                <span class="field-value">{{ student().dob || 'N/A' }}</span>
+                <span class="field-value">{{ student().dob ? (student().dob | date:'dd/MM/yyyy') : 'N/A' }}</span>
               </div>
               <div class="info-field">
                 <span class="field-label">Giới tính</span>
-                <span class="field-value">{{ student().gender || 'N/A' }}</span>
+                <span class="field-value">{{ student().gender === 'male' ? 'Nam' : (student().gender === 'female' ? 'Nữ' : (student().gender || 'N/A')) }}</span>
               </div>
               <div class="info-field">
                 <span class="field-label">Quốc tịch</span>
@@ -97,7 +102,7 @@
               </div>
               <div class="info-field">
                 <span class="field-label">Lớp</span>
-                <span class="field-value">{{ student().class || 'N/A' }}</span>
+                <span class="field-value">{{ student().class_name || 'N/A' }}</span>
               </div>
               <div class="info-field">
                 <span class="field-label">Năm nhập học</span>

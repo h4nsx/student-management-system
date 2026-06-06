@@ -1,4 +1,4 @@
-import { Component, signal, inject, OnInit } from '@angular/core';
+import { Component, signal, inject, OnInit, computed } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { HttpClient } from '@angular/common/http';
 import { Navbar } from '../../../../shared/components/navbar/navbar';
@@ -26,6 +26,16 @@ export class QrCardPage implements OnInit {
   
   // History
   scanHistory = signal<any[]>([]);
+
+  avatarInitials = computed(() => {
+    if (!this.studentInfo()) return '';
+    const name = this.studentInfo().full_name || '';
+    const parts = name.trim().split(' ');
+    if (parts.length >= 2) {
+      return (parts[0][0] + parts[parts.length - 1][0]).toUpperCase();
+    }
+    return name.slice(0, 2).toUpperCase();
+  });
 
   ngOnInit() {
     this.fetchData();

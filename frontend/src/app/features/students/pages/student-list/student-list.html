@@ -10,7 +10,7 @@
           <h1 class="page-title">Danh sách Sinh viên</h1>
           <p class="page-sub">Quản lý toàn bộ sinh viên trong hệ thống</p>
         </div>
-        <button class="btn-primary" routerLink="/students/form">
+        <button class="btn-primary" (click)="onCreateStudent()">
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
             <line x1="12" y1="5" x2="12" y2="19"/>
             <line x1="5" y1="12" x2="19" y2="12"/>
@@ -28,12 +28,12 @@
         <div class="mini-stat-divider"></div>
         <div class="mini-stat">
           <div class="mini-stat-value active-color">{{ stats().active }}</div>
-          <div class="mini-stat-label">Đang học</div>
+          <div class="mini-stat-label">Đã xác thực</div>
         </div>
         <div class="mini-stat-divider"></div>
         <div class="mini-stat">
           <div class="mini-stat-value warn-color">{{ stats().paused }}</div>
-          <div class="mini-stat-label">Bảo lưu</div>
+          <div class="mini-stat-label">Chưa xác thực</div>
         </div>
         <div class="mini-stat-divider"></div>
         <div class="mini-stat">
@@ -60,9 +60,9 @@
             [value]="filterStatus()"
             (change)="filterStatus.set($any($event.target).value)">
             <option value="all">Tất cả trạng thái</option>
-            <option value="Đang học">Đang học</option>
-            <option value="Bảo lưu">Bảo lưu</option>
-            <option value="Tốt nghiệp">Tốt nghiệp</option>
+            <option value="verified">Đã xác thực</option>
+            <option value="unverified">Chưa xác thực</option>
+            <option value="banned">Bị cấm</option>
           </select>
 
           <!-- Major filter -->
@@ -147,7 +147,7 @@
 <!-- Confirm Delete -->
 <app-confirm-dialog
   title="Xoá sinh viên?"
-  [message]="'Bạn có chắc muốn xoá sinh viên ' + (selectedStudent()?.fullName ?? '') + '? Thao tác này không thể hoàn tác.'"
+  [message]="'Bạn có chắc muốn xoá sinh viên ' + (selectedStudent()?.full_name ?? '') + '? Thao tác này không thể hoàn tác.'"
   confirmLabel="Xoá"
   cancelLabel="Huỷ"
   type="danger"

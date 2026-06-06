@@ -17,7 +17,8 @@ export class Navbar implements OnInit {
   currentUser = signal({
     name: 'Đang tải...',
     studentId: '...',
-    avatar: null as string | null
+    avatar: null as string | null,
+    role: 'student'
   });
 
   notificationCount = signal(0);
@@ -30,17 +31,19 @@ export class Navbar implements OnInit {
         if (res.data) {
           this.currentUser.set({
             name: res.data.profile?.full_name || res.data.email || 'Người dùng',
-            studentId: res.data.profile?.student_code || 'N/A',
-            avatar: res.data.profile?.avatar_url || null
+            studentId: res.data.profile?.student_code || res.data.role || 'N/A',
+            avatar: res.data.profile?.avatar_url || null,
+            role: res.data.role || 'student'
           });
         }
       },
       error: () => {
         // Fallback for demo or error
         this.currentUser.set({
-          name: 'Demo Student',
-          studentId: 'demo@example.com',
-          avatar: null
+          name: 'Người dùng',
+          studentId: 'N/A',
+          avatar: null,
+          role: 'student'
         });
       }
     });

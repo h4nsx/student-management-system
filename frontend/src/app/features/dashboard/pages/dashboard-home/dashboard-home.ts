@@ -4,12 +4,13 @@ import { RouterModule } from '@angular/router';
 import { HttpClient } from '@angular/common/http';
 import { Navbar } from '../../../../shared/components/navbar/navbar';
 import { Sidebar } from '../../../../shared/components/sidebar/sidebar';
+import { LoadingSpinner } from '../../../../shared/components/loading-spinner/loading-spinner';
 import { AuthService } from '../../../../core/services/auth.service';
 
 @Component({
   selector: 'app-dashboard-home',
   standalone: true,
-  imports: [CommonModule, RouterModule, Navbar, Sidebar],
+  imports: [CommonModule, RouterModule, Navbar, Sidebar, LoadingSpinner],
   templateUrl: './dashboard-home.html',
   styleUrl: './dashboard-home.css'
 })
@@ -119,19 +120,67 @@ export class DashboardHome implements OnInit, OnDestroy {
       error: (err) => console.error('Error fetching notifications:', err)
     });
 
-    // TODO: Connect these to a real class API endpoint later
-    this.todayClasses.set([
-      { id: 1, subject: 'Kỹ thuật Phần mềm', startTime: '07:00', endTime: '09:15', room: 'F1-201', period: '1-3' },
-      { id: 2, subject: 'Thiết kế Giao diện', startTime: '09:30', endTime: '11:45', room: 'Lab 3', period: '4-6' },
-      { id: 3, subject: 'Đồ án cơ sở', startTime: '13:00', endTime: '15:15', room: 'F2-302', period: '7-9' }
-    ]);
-    this.updateClassStatuses();
+    // Fetch real schedule data
+    this.http.get<any>('http://localhost:5000/api/students/classes').subscribe({
+      next: (res) => {
+        if (res.success && res.data) {
+          const dayMap: any = {
+            'Monday': 'Thứ 2', 'Tuesday': 'Thứ 3', 'Wednesday': 'Thứ 4',
+            'Thursday': 'Thứ 5', 'Friday': 'Thứ 6', 'Saturday': 'Thứ 7', 'Sunday': 'Chủ nhật'
+          };
+          const dayIndex: any = {
+            'Monday': 1, 'Tuesday': 2, 'Wednesday': 3, 'Thursday': 4,
+            'Friday': 5, 'Saturday': 6, 'Sunday': 0
+          };
+          const todayIdx = new Date().getDay(); // 0=Sun, 1=Mon...
+          const todayList: any[] = [];
+          const upcomingList: any[] = [];
 
-    this.upcomingClasses.set([
-      { id: 4, subject: 'Mạng máy tính', dateDay: '06', dateMonth: 'Th6', time: '07:00 - 09:15', room: 'A1-105' },
-      { id: 5, subject: 'Kiến trúc máy tính', dateDay: '08', dateMonth: 'Th6', time: '13:00 - 15:15', room: 'C1-301' }
-    ]);
+          for (const c of res.data) {
+            if (c.schedules) {
+              for (const s of c.schedules) {
+                const sIdx = dayIndex[s.day_of_week];
+                const entry = {
+                  id: s.id,
+                  subject: s.subject || c.class_name,
+                  startTime: s.start_time?.substring(0, 5) || '',
+                  endTime: s.end_time?.substring(0, 5) || '',
+                  room: s.room,
+                  period: '',
+                  status: 'upcoming',
+                  dayLabel: dayMap[s.day_of_week] || s.day_of_week
+                };
+                if (sIdx === todayIdx) {
+                  todayList.push(entry);
+                } else {
+                  // Find next occurrence
+                  let diff = sIdx - todayIdx;
+                  if (diff <= 0) diff += 7;
+                  const nextDate = new Date();
+                  nextDate.setDate(nextDate.getDate() + diff);
+                  upcomingList.push({
+                    ...entry,
+                    dateDay: nextDate.getDate().toString().padStart(2, '0'),
+                    dateMonth: 'Th' + (nextDate.getMonth() + 1),
+                    time: `${entry.startTime} - ${entry.endTime}`
+                  });
+                }
+              }
+            }
+          }
 
-    this.isLoading.set(false);
+          // Sort today's classes by start time
+          todayList.sort((a, b) => a.startTime.localeCompare(b.startTime));
+          this.todayClasses.set(todayList);
+          this.updateClassStatuses();
+
+          // Sort upcoming by date
+          upcomingList.sort((a, b) => a.dateDay.localeCompare(b.dateDay));
+          this.upcomingClasses.set(upcomingList.slice(0, 5));
+        }
+        this.isLoading.set(false);
+      },
+      error: () => this.isLoading.set(false)
+    });
   }
 }

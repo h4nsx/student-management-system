@@ -1,0 +1,183 @@
+<div class="app-shell">
+  <app-navbar></app-navbar>
+  <div class="app-body">
+    <app-sidebar></app-sidebar>
+    <main class="main-content">
+      
+      <div class="page-header">
+        <a routerLink="/students/list" class="back-link">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="15 18 9 12 15 6"/></svg>
+          Danh sách sinh viên
+        </a>
+        <div class="header-content">
+          <div>
+            <h1 class="page-title">{{ student()?.full_name || 'Đang tải...' }}</h1>
+            <p class="page-subtitle">{{ student()?.student_code }} • {{ student()?.email }}</p>
+          </div>
+          <div class="status-badge" [class]="student()?.student_status">
+            {{ student()?.student_status === 'verified' ? 'Đã xác thực' : (student()?.student_status === 'unverified' ? 'Chưa xác thực' : 'Bị cấm') }}
+          </div>
+        </div>
+      </div>
+
+      @if (!isLoading() && student()) {
+        <div class="detail-container">
+          <!-- Tabs -->
+          <div class="tabs">
+            <button class="tab-btn" [class.active]="activeTab() === 'profile'" (click)="activeTab.set('profile')">Hồ sơ cá nhân</button>
+            <button class="tab-btn" [class.active]="activeTab() === 'academic'" (click)="activeTab.set('academic')">Học vụ</button>
+            <button class="tab-btn" [class.active]="activeTab() === 'verification'" (click)="activeTab.set('verification')">Xác thực</button>
+            <button class="tab-btn" [class.active]="activeTab() === 'edit'" (click)="activeTab.set('edit')">Chỉnh sửa</button>
+          </div>
+
+          <!-- Tab Content -->
+          <div class="tab-content">
+            
+            @if (activeTab() === 'profile') {
+              <div class="info-grid">
+                <div class="info-item">
+                  <label>Họ và tên</label>
+                  <div>{{ student().full_name }}</div>
+                </div>
+                <div class="info-item">
+                  <label>Mã sinh viên</label>
+                  <div>{{ student().student_code }}</div>
+                </div>
+                <div class="info-item">
+                  <label>Email</label>
+                  <div>{{ student().email }}</div>
+                </div>
+                <div class="info-item">
+                  <label>Ngày sinh</label>
+                  <div>{{ student().dob | date:'dd/MM/yyyy' }}</div>
+                </div>
+                <div class="info-item">
+                  <label>Giới tính</label>
+                  <div>{{ student().gender }}</div>
+                </div>
+                <div class="info-item">
+                  <label>Số điện thoại</label>
+                  <div>{{ student().phone_number || 'N/A' }}</div>
+                </div>
+                <div class="info-item" style="grid-column: 1 / -1">
+                  <label>Địa chỉ</label>
+                  <div>{{ student().address || 'N/A' }}</div>
+                </div>
+              </div>
+            }
+
+            @if (activeTab() === 'academic') {
+              <div class="info-grid">
+                <div class="info-item">
+                  <label>Lớp học</label>
+                  <div>{{ student().class_name || 'N/A' }}</div>
+                </div>
+                <div class="info-item">
+                  <label>Ngành học</label>
+                  <div>{{ student().major || 'N/A' }}</div>
+                </div>
+                <div class="info-item">
+                  <label>Khoa</label>
+                  <div>{{ student().faculty_id }} (ID Khoa)</div>
+                </div>
+                <div class="info-item">
+                  <label>Dư nợ học phí</label>
+                  <div style="color: #f87171; font-weight: bold;">{{ student().tuition_debt || 0 }} VNĐ</div>
+                </div>
+              </div>
+            }
+
+            @if (activeTab() === 'verification') {
+              <div class="info-grid">
+                <div class="info-item">
+                  <label>Trạng thái xác thực</label>
+                  <div>
+                    <span class="status-badge" [class]="student().student_status">
+                      {{ student().student_status === 'verified' ? 'Đã xác thực (Hợp lệ)' : 'Chưa xác thực' }}
+                    </span>
+                  </div>
+                </div>
+                <div class="info-item">
+                  <label>Trạng thái tài khoản</label>
+                  <div>{{ student().account_status === 'active' ? 'Đang hoạt động' : 'Bị khoá' }}</div>
+                </div>
+              </div>
+            }
+
+            @if (activeTab() === 'edit') {
+              <div class="edit-form">
+                <div class="form-grid">
+                  <div class="form-group">
+                    <label>Mã sinh viên (MSSV - Không thể sửa)</label>
+                    <input type="text" [(ngModel)]="editData().student_code" disabled style="opacity: 0.7; cursor: not-allowed;">
+                  </div>
+                  <div class="form-group">
+                    <label>Họ và tên</label>
+                    <input type="text" [(ngModel)]="editData().full_name">
+                  </div>
+                  <div class="form-group">
+                    <label>Email đăng nhập</label>
+                    <input type="email" [(ngModel)]="editData().email">
+                  </div>
+                  <div class="form-group">
+                    <label>Ngày sinh</label>
+                    <input type="date" [(ngModel)]="editData().dob">
+                  </div>
+                  <div class="form-group">
+                    <label>Giới tính</label>
+                    <select [(ngModel)]="editData().gender">
+                      <option value="Nam">Nam</option>
+                      <option value="Nữ">Nữ</option>
+                    </select>
+                  </div>
+                  <div class="form-group">
+                    <label>Số điện thoại</label>
+                    <input type="text" [(ngModel)]="editData().phone_number">
+                  </div>
+                  <div class="form-group">
+                    <label>Địa chỉ</label>
+                    <input type="text" [(ngModel)]="editData().address">
+                  </div>
+                  <div class="form-group">
+                    <label>Lớp</label>
+                    <input type="text" [(ngModel)]="editData().class_name">
+                  </div>
+                  <div class="form-group">
+                    <label>Ngành học</label>
+                    <input type="text" [(ngModel)]="editData().major">
+                  </div>
+                  <div class="form-group">
+                    <label>ID Khoa (Faculty)</label>
+                    <input type="number" [(ngModel)]="editData().faculty_id">
+                  </div>
+                  <div class="form-group">
+                    <label>Trạng thái sinh viên</label>
+                    <select [(ngModel)]="editData().student_status">
+                      <option value="unverified">Chưa xác thực</option>
+                      <option value="verified">Đã xác thực</option>
+                      <option value="banned">Bị cấm</option>
+                    </select>
+                  </div>
+                  <div class="form-group">
+                    <label>Trạng thái tài khoản (Đăng nhập)</label>
+                    <select [(ngModel)]="editData().account_status">
+                      <option value="active">Đang hoạt động</option>
+                      <option value="disabled">Bị khoá</option>
+                    </select>
+                  </div>
+                </div>
+                <div class="form-actions">
+                  <button class="btn-submit" (click)="saveChanges()" [disabled]="isLoading()">
+                    @if (isLoading()) { Đang lưu... } @else { Lưu thay đổi }
+                  </button>
+                </div>
+              </div>
+            }
+
+          </div>
+        </div>
+      }
+
+    </main>
+  </div>
+</div>

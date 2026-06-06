@@ -1,1 +1,171 @@
-<p>admin-dashboard works!</p>
+<div class="app-shell">
+  <app-navbar></app-navbar>
+  <div class="app-body">
+    <app-sidebar></app-sidebar>
+    <main class="main-content">
+      <div class="page-header">
+        <div>
+          <h1 class="page-title">Tổng quan Hệ thống</h1>
+          <p class="page-subtitle">Theo dõi các chỉ số hoạt động chính của hệ thống quản lý sinh viên</p>
+        </div>
+      </div>
+
+      @if (isLoading()) {
+        <div class="state-container">
+          <app-loading-spinner></app-loading-spinner>
+        </div>
+      } @else {
+        
+        <!-- KPI Cards -->
+        <div class="kpi-grid">
+          <div class="kpi-card">
+            <div class="kpi-icon blue"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg></div>
+            <div class="kpi-info">
+              <span class="kpi-label">Tổng Sinh Viên</span>
+              <span class="kpi-value">{{ kpis().totalStudents }}</span>
+            </div>
+          </div>
+          <div class="kpi-card">
+            <div class="kpi-icon green"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg></div>
+            <div class="kpi-info">
+              <span class="kpi-label">Sinh Viên Đã Xác Thực</span>
+              <span class="kpi-value">{{ kpis().verifiedStudents }}</span>
+            </div>
+          </div>
+          <div class="kpi-card">
+            <div class="kpi-icon yellow"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg></div>
+            <div class="kpi-info">
+              <span class="kpi-label">Chờ Xác Thực</span>
+              <span class="kpi-value">{{ kpis().pendingVerification }}</span>
+            </div>
+          </div>
+          <div class="kpi-card">
+            <div class="kpi-icon purple"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/></svg></div>
+            <div class="kpi-info">
+              <span class="kpi-label">Lớp Học Đang Mở</span>
+              <span class="kpi-value">{{ kpis().activeClasses }}</span>
+            </div>
+          </div>
+          <div class="kpi-card">
+            <div class="kpi-icon indigo"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/><polyline points="10 9 9 9 8 9"/></svg></div>
+            <div class="kpi-info">
+              <span class="kpi-label">Tổng Tài Liệu</span>
+              <span class="kpi-value">{{ kpis().totalDocuments }}</span>
+            </div>
+          </div>
+          <div class="kpi-card">
+            <div class="kpi-icon red"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="12" y1="1" x2="12" y2="23"/><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg></div>
+            <div class="kpi-info">
+              <span class="kpi-label">Tổng Dư Nợ Học Phí</span>
+              <span class="kpi-value">{{ formatCurrency(kpis().totalTuitionDebt) }}</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Dashboard Body -->
+        <div class="dashboard-grid">
+          
+          <!-- Charts Left -->
+          <div class="charts-column">
+            
+            <!-- Monthly Registration -->
+            <div class="dashboard-panel">
+              <h3 class="panel-title">Đăng ký mới (6 tháng gần đây)</h3>
+              <div class="bar-chart horizontal">
+                @for (m of charts()?.monthlyRegistration; track m.month) {
+                  <div class="bar-item">
+                    <div class="bar-label">{{ m.month }}</div>
+                    <div class="bar-track">
+                      <div class="bar-fill blue" [style.width]="m.percentage + '%'">
+                        <span class="bar-val">{{ m.count }}</span>
+                      </div>
+                    </div>
+                  </div>
+                }
+              </div>
+            </div>
+
+            <!-- Students by Faculty -->
+            <div class="dashboard-panel">
+              <h3 class="panel-title">Sinh viên theo khoa</h3>
+              <div class="bar-chart horizontal">
+                @for (f of charts()?.studentsByFaculty; track f.faculty) {
+                  <div class="bar-item">
+                    <div class="bar-label">{{ f.faculty || 'Chưa phân khoa' }}</div>
+                    <div class="bar-track">
+                      <div class="bar-fill purple" [style.width]="f.percentage + '%'">
+                        <span class="bar-val">{{ f.count }}</span>
+                      </div>
+                    </div>
+                  </div>
+                }
+              </div>
+            </div>
+            
+          </div>
+
+          <!-- Right Column -->
+          <div class="side-column">
+            
+            <!-- Verification Status -->
+            <div class="dashboard-panel">
+              <h3 class="panel-title">Trạng thái xác thực</h3>
+              <div class="status-list">
+                @for (s of charts()?.verificationStatus; track s.status) {
+                  <div class="status-item">
+                    <div class="status-indicator" [class]="s.status"></div>
+                    <div class="status-name">{{ s.status === 'verified' ? 'Đã xác thực' : (s.status === 'pending' ? 'Chờ duyệt' : 'Chưa xác thực') }}</div>
+                    <div class="status-count">{{ s.count }}</div>
+                  </div>
+                }
+              </div>
+            </div>
+
+            <!-- Recent Activities -->
+            <div class="dashboard-panel">
+              <h3 class="panel-title">Hoạt động gần đây</h3>
+              <div class="activity-timeline">
+                @for (act of paginatedActivities(); track act.id) {
+                  <div class="activity-item">
+                    <div class="act-dot"></div>
+                    <div class="act-content">
+                      <p class="act-desc">{{ act.action }}</p>
+                      <span class="act-time">{{ act.created_at | date:'dd/MM/yyyy HH:mm' }} &bull; {{ act.user_email }}</span>
+                    </div>
+                  </div>
+                }
+                @if (recentActivities().length === 0) {
+                  <p class="empty-text">Chưa có hoạt động nào.</p>
+                }
+              </div>
+              
+              @if (totalPages() > 1) {
+                <div class="pagination-controls" style="display: flex; justify-content: space-between; align-items: center; margin-top: 16px; padding-top: 16px; border-top: 1px solid rgba(255, 255, 255, 0.05);">
+                  <button 
+                    (click)="prevPage()" 
+                    [disabled]="currentPage() === 1"
+                    style="background: transparent; border: 1px solid rgba(255, 255, 255, 0.1); color: #cbd5e1; padding: 6px 12px; border-radius: 6px; cursor: pointer; font-size: 13px;"
+                    [style.opacity]="currentPage() === 1 ? '0.5' : '1'">
+                    Trước
+                  </button>
+                  <span style="font-size: 13px; color: #94a3b8;">
+                    Trang {{ currentPage() }} / {{ totalPages() }}
+                  </span>
+                  <button 
+                    (click)="nextPage()" 
+                    [disabled]="currentPage() === totalPages()"
+                    style="background: transparent; border: 1px solid rgba(255, 255, 255, 0.1); color: #cbd5e1; padding: 6px 12px; border-radius: 6px; cursor: pointer; font-size: 13px;"
+                    [style.opacity]="currentPage() === totalPages() ? '0.5' : '1'">
+                    Sau
+                  </button>
+                </div>
+              }
+            </div>
+
+          </div>
+        </div>
+
+      }
+    </main>
+  </div>
+</div>

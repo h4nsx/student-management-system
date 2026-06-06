@@ -25,13 +25,18 @@ export class Sidebar implements OnInit {
   isCollapsed = signal(false);
 
   allNavItems: NavItem[] = [
-    { label: 'Dashboard', icon: 'home', route: '/dashboard', roles: ['student', 'admin', 'staff'] },
+    { label: 'Trang chủ', icon: 'home', route: '/admin/dashboard', roles: ['admin'] },
+    { label: 'Dashboard', icon: 'home', route: '/dashboard', roles: ['student', 'staff'] },
     { label: 'Danh sách SV', icon: 'users', route: '/students/list', roles: ['admin', 'staff'] },
+    { label: 'Quản lý Lớp học', icon: 'book', route: '/admin/classes', roles: ['admin'] },
+    { label: 'Thời khoá biểu', icon: 'calendar', route: '/admin/schedules', roles: ['admin'] },
+    { label: 'Tài liệu ', icon: 'folder', route: '/admin/documents', roles: ['admin', 'staff'] },
+    { label: 'Thông báo', icon: 'bell', route: '/admin/announcements', roles: ['admin', 'staff'] },
     { label: 'Hồ sơ cá nhân', icon: 'user', route: '/students/profile', roles: ['student'] },
-    { label: 'Thông tin chi tiết', icon: 'file-text', route: '/students/detail', roles: ['student', 'admin', 'staff'] },
-    { label: 'Tài liệu', icon: 'folder', route: '/documents', roles: ['student', 'admin', 'staff'] },
+    { label: 'Thông tin chi tiết', icon: 'file-text', route: '/students/detail', roles: ['student'] },
+    { label: 'Tài liệu học tập', icon: 'folder', route: '/documents', roles: ['student'] },
     { label: 'Lớp học', icon: 'book', route: '/classes', roles: ['student'] },
-    { label: 'Thông báo', icon: 'bell', route: '/notifications', badge: 0, roles: ['student', 'admin', 'staff'] },
+    { label: 'Thông báo', icon: 'bell', route: '/notifications', roles: ['student'] },
     { label: 'Mã QR', icon: 'grid', route: '/qr-card', roles: ['student'] },
   ];
 
@@ -55,7 +60,7 @@ export class Sidebar implements OnInit {
   }
 
   isActive(route: string): boolean {
-    return this.router.url === route;
+    return this.router.url === route || this.router.url.startsWith(route + '/');
   }
 
   toggleCollapse() {

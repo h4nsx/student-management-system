@@ -132,7 +132,7 @@
               </div>
               <div class="form-field" [class.has-error]="getError('email')">
                 <label>Email <span class="required">*</span></label>
-                <input type="email" placeholder="masv@university.edu.vn"
+                <input type="email" placeholder="masv@hvct.edu.vn"
                   [value]="form().email"
                   (input)="updateField('email', $any($event.target).value)">
                 @if (getError('email')) { <span class="error-msg">{{ getError('email') }}</span> }

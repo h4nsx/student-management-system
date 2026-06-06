@@ -145,14 +145,27 @@ exports.getMyClasses = async (req, res, next) => {
       return res.status(404).json({ success: false, message: 'Student not found' });
     }
     
-    const { rows } = await db.query(`
+    // Fetch courses
+    const { rows: courses } = await db.query(`
       SELECT c.* 
       FROM courses c
       JOIN enrollments e ON c.id = e.course_id
       WHERE e.student_id = $1
     `, [student.id]);
     
-    res.status(200).json({ success: true, data: rows });
+    // Fetch schedules for these courses
+    if (courses.length > 0) {
+      const courseIds = courses.map(c => c.id);
+      const { rows: schedules } = await db.query(`
+        SELECT * FROM class_schedules WHERE course_id = ANY($1)
+      `, [courseIds]);
+      
+      for (const course of courses) {
+        course.schedules = schedules.filter(s => s.course_id === course.id);
+      }
+    }
+    
+    res.status(200).json({ success: true, data: courses });
   } catch (error) {
     next(error);
   }

@@ -1,6 +1,5 @@
 import { Component, input, output, computed } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { Student } from '../../pages/student-list/student-list';
 
 @Component({
   selector: 'app-student-card',
@@ -10,19 +9,18 @@ import { Student } from '../../pages/student-list/student-list';
   styleUrl: './student-card.css'
 })
 export class StudentCard {
-  student = input.required<Student>();
+  student = input.required<any>();
 
-  view = output<Student>();
-  edit = output<Student>();
-  delete = output<Student>();
+  view = output<any>();
+  edit = output<any>();
+  delete = output<any>();
 
   initials = computed(() => {
-    return this.student().fullName
-      .split(' ')
-      .map(n => n[0])
-      .slice(-2)
-      .join('')
-      .toUpperCase();
+    const s = this.student();
+    if (!s || !s.full_name) return '';
+    const parts = s.full_name.split(' ');
+    if (parts.length === 1) return parts[0].substring(0, 2).toUpperCase();
+    return (parts[0][0] + parts[parts.length - 1][0]).toUpperCase();
   });
 
   gpaClass = computed(() => {

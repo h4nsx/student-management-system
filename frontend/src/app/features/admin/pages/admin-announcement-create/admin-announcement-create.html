@@ -1,0 +1,76 @@
+<div class="app-shell">
+  <app-navbar></app-navbar>
+  <div class="app-body">
+    <app-sidebar></app-sidebar>
+    <main class="main-content">
+      
+      <div class="page-header">
+        <a routerLink="/admin/announcements" class="back-link">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="15 18 9 12 15 6"/></svg>
+          Danh sách thông báo
+        </a>
+        <h1 class="page-title">Tạo Thông báo Mới</h1>
+        <p class="page-subtitle">Soạn thảo và đăng tải thông báo đến sinh viên</p>
+      </div>
+
+      <div class="form-container">
+        @if (errorMessage()) { <div class="alert error">{{ errorMessage() }}</div> }
+        @if (successMessage()) { <div class="alert success">{{ successMessage() }}</div> }
+
+        <div class="form-grid">
+          
+          <div class="form-group" style="grid-column: 1 / -1">
+            <label>Tiêu đề</label>
+            <input type="text" [(ngModel)]="formData.title" placeholder="VD: Thông báo nghỉ học ngày lễ...">
+          </div>
+          
+          <div class="form-group" style="grid-column: 1 / -1">
+            <label>Nội dung</label>
+            <textarea [(ngModel)]="formData.content" rows="6" placeholder="Nhập nội dung chi tiết..."></textarea>
+          </div>
+
+          <div class="form-group">
+            <label>Đối tượng nhận</label>
+            <select [(ngModel)]="formData.audience">
+              <option value="all">Toàn trường (Tất cả sinh viên)</option>
+              <option value="faculty">Khoa cụ thể</option>
+              <option value="class">Lớp cụ thể</option>
+            </select>
+          </div>
+
+          @if (formData.audience === 'faculty') {
+            <div class="form-group">
+              <label>Chọn Khoa</label>
+              <select [(ngModel)]="formData.target_id">
+                <option value="" disabled>-- Chọn khoa --</option>
+                @for (f of faculties(); track f.id) {
+                  <option [value]="f.code">{{ f.name }} ({{ f.code }})</option>
+                }
+              </select>
+            </div>
+          }
+          @if (formData.audience === 'class') {
+            <div class="form-group">
+              <label>Chọn Lớp Học</label>
+              <select [(ngModel)]="formData.target_id">
+                <option value="" disabled>-- Chọn lớp học --</option>
+                @for (c of classes(); track c.id) {
+                  <option [value]="c.class_code">{{ c.class_name }} ({{ c.class_code }})</option>
+                }
+              </select>
+            </div>
+          }
+
+        </div>
+
+        <div class="form-actions">
+          <button class="btn-cancel" routerLink="/admin/announcements">Huỷ</button>
+          <button class="btn-submit" (click)="onSubmit()" [disabled]="isLoading()">
+            @if (isLoading()) { Đang xử lý... } @else { Xuất bản }
+          </button>
+        </div>
+      </div>
+
+    </main>
+  </div>
+</div>

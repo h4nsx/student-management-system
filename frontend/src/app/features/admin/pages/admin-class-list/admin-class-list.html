@@ -1,0 +1,69 @@
+<div class="app-shell">
+  <app-navbar></app-navbar>
+  <div class="app-body">
+    <app-sidebar></app-sidebar>
+    <main class="main-content">
+      
+      <div class="page-header">
+        <div>
+          <h1 class="page-title">Quản lý Lớp học</h1>
+          <p class="page-subtitle">Danh sách các lớp học trong hệ thống</p>
+        </div>
+        <button class="btn-primary" routerLink="/admin/classes/create">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+          Thêm Lớp Mới
+        </button>
+      </div>
+
+      <div class="toolbar">
+        <div class="search-box">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+          <input type="text" placeholder="Tìm theo mã lớp, tên lớp..." [value]="searchText()" (input)="searchText.set($any($event.target).value)" (keyup.enter)="onSearch()">
+        </div>
+        <button class="btn-secondary" (click)="onSearch()">Tìm kiếm</button>
+      </div>
+
+      <div class="table-container">
+        @if (isLoading()) {
+          <div class="loading-state">Đang tải dữ liệu...</div>
+        } @else {
+          <table class="data-table">
+            <thead>
+              <tr>
+                <th>Mã Lớp</th>
+                <th>Tên Lớp</th>
+                <th>Giảng viên</th>
+                <th>Thao tác</th>
+              </tr>
+            </thead>
+            <tbody>
+              @for (cls of classes(); track cls.id) {
+                <tr (click)="viewDetail(cls.id)">
+                  <td class="bold">{{ cls.class_code }}</td>
+                  <td>{{ cls.class_name }}</td>
+                  <td>{{ cls.lecturer || 'N/A' }}</td>
+                  <td class="actions">
+                    <button class="btn-icon" (click)="$event.stopPropagation(); viewDetail(cls.id)">
+                      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
+                    </button>
+                  </td>
+                </tr>
+              }
+              @if (classes().length === 0) {
+                <tr>
+                  <td colspan="4" class="empty-state" style="text-align: center; padding: 40px;">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" style="width: 48px; height: 48px; color: #475569; margin-bottom: 12px;">
+                      <path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/>
+                    </svg>
+                    <div style="color: #94a3b8;">Không tìm thấy lớp học nào.</div>
+                  </td>
+                </tr>
+              }
+            </tbody>
+          </table>
+        }
+      </div>
+
+    </main>
+  </div>
+</div>

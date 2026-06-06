@@ -65,7 +65,7 @@
                   } @else {
                     @for (entry of dayEntries; track entry.courseCode) {
                       <div class="timetable-card">
-                        <div class="time-periods">{{ entry.timeString }} (Tiết {{ entry.periods }})</div>
+                        <div class="time-periods">{{ entry.timeString }}</div>
                         <div class="tt-course">{{ entry.courseName }}</div>
                         <div class="tt-room">Phòng: {{ entry.room }}</div>
                       </div>

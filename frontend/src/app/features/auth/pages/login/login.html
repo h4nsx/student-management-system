@@ -8,7 +8,7 @@
           <path d="M2 12l10 5 10-5"/>
         </svg>
       </div>
-      <span>EduTrack</span>
+      <span>HVCT - Cao Đẳng Kỹ Nghệ II</span>
     </div>
     <h1 class="auth-headline">Chào mừng trở lại</h1>
     <p class="auth-desc">Đăng nhập để quản lý hồ sơ và thông tin sinh viên của bạn.</p>
@@ -51,7 +51,7 @@
             <rect x="2" y="5" width="20" height="14" rx="2"/>
             <line x1="2" y1="10" x2="22" y2="10"/>
           </svg>
-          <input type="text" placeholder="VD: SV2021001"
+          <input type="text" placeholder="VD: demo@example.com"
             [value]="studentId()"
             (input)="studentId.set($any($event.target).value)">
         </div>
@@ -101,9 +101,16 @@
         }
       </button>
 
-      <button class="btn-submit" type="button" (click)="fillDemo()" style="margin-top: 10px; background: #e0e7ff; color: #4338ca;">
-        Điền tài khoản Demo
-      </button>
+      @if (isDev) {
+      <div style="display: flex; gap: 10px; margin-top: 10px;">
+        <button class="btn-submit" type="button" (click)="fillDemo()" style="flex: 1; background: #e0e7ff; color: #4338ca;">
+          Demo Sinh viên
+        </button>
+        <button class="btn-submit" type="button" (click)="fillAdminDemo()" style="flex: 1; background: #fee2e2; color: #b91c1c;">
+          Demo Admin
+        </button>
+      </div>
+      }
 
     </div>
   </div>

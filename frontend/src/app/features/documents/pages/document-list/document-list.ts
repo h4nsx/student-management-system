@@ -30,8 +30,8 @@ export class DocumentList implements OnInit {
   isLoading = signal(true);
   
   searchQuery = signal('');
-  filterType = signal('all'); // all, course_material, class_document, university_document, form
-
+  filterType = signal('all');
+  
   ngOnInit() {
     this.http.get<any>('http://localhost:5000/api/documents/class').subscribe({
       next: (res) => {

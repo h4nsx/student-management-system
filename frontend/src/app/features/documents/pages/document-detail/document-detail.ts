@@ -60,7 +60,7 @@ export class DocumentDetail implements OnInit {
     switch(type) {
       case 'course_material': return 'Tài liệu môn học';
       case 'class_document': return 'Tài liệu sinh hoạt lớp';
-      case 'university_document': return 'Quy định / Sổ tay';
+      case 'university_document': return 'Quy định Cao Đẳng';
       case 'form': return 'Biểu mẫu';
       default: return 'Tài liệu chung';
     }

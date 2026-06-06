@@ -12,7 +12,9 @@
       </div>
 
       @if (isLoading()) {
-        <div class="loading-state">Đang tải dữ liệu...</div>
+        <div class="state-container" style="display: flex; justify-content: center; padding: 80px 0;">
+          <app-loading-spinner></app-loading-spinner>
+        </div>
       } @else {
         <div class="dashboard-top">
           <!-- Personal Summary Widget -->
@@ -98,7 +100,7 @@
           <div class="dash-card widget-upcoming">
             <div class="card-header">
               <h3>Lớp học sắp tới</h3>
-              <a href="#" class="card-link">Xem thời khóa biểu</a>
+              <a routerLink="/classes" class="card-link">Xem thời khóa biểu</a>
             </div>
             <div class="upcoming-list">
               @for (cls of upcomingClasses(); track cls.id) {

@@ -1,0 +1,71 @@
+<div class="app-shell">
+  <app-navbar></app-navbar>
+  <div class="app-body">
+    <app-sidebar></app-sidebar>
+    <main class="main-content">
+      
+      <div class="page-header">
+        <a routerLink="/admin/schedules" class="back-link">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="15 18 9 12 15 6"/></svg>
+          Danh sách lịch học
+        </a>
+        <h1 class="page-title">Thêm Lịch Học Mới</h1>
+        <p class="page-subtitle">Phân bổ thời gian và phòng học cho các lớp</p>
+      </div>
+
+      <div class="form-container">
+        @if (errorMessage()) { <div class="alert error">{{ errorMessage() }}</div> }
+        @if (successMessage()) { <div class="alert success">{{ successMessage() }}</div> }
+
+        <div class="form-grid">
+          <div class="form-group" style="grid-column: 1 / -1">
+            <label>Lớp học</label>
+            <select [(ngModel)]="formData.course_id">
+              <option value="">-- Chọn lớp học --</option>
+              @for (cls of classes(); track cls.id) {
+                <option [value]="cls.id">{{ cls.class_code }} - {{ cls.class_name }}</option>
+              }
+            </select>
+          </div>
+          
+          <div class="form-group">
+            <label>Môn học</label>
+            <input type="text" [(ngModel)]="formData.subject" placeholder="VD: Lập trình Web">
+          </div>
+          
+          <div class="form-group">
+            <label>Phòng học</label>
+            <input type="text" [(ngModel)]="formData.room" placeholder="VD: A1-101">
+          </div>
+
+          <div class="form-group">
+            <label>Thứ</label>
+            <select [(ngModel)]="formData.day_of_week">
+              @for (day of days; track day) {
+                <option [value]="day">{{ day }}</option>
+              }
+            </select>
+          </div>
+
+          <div class="form-group">
+            <label>Giờ bắt đầu</label>
+            <input type="time" [(ngModel)]="formData.start_time">
+          </div>
+
+          <div class="form-group">
+            <label>Giờ kết thúc</label>
+            <input type="time" [(ngModel)]="formData.end_time">
+          </div>
+        </div>
+
+        <div class="form-actions">
+          <button class="btn-cancel" routerLink="/admin/schedules">Huỷ</button>
+          <button class="btn-submit" (click)="onSubmit()" [disabled]="isLoading()">
+            @if (isLoading()) { Đang xử lý... } @else { Thêm Lịch Học }
+          </button>
+        </div>
+      </div>
+
+    </main>
+  </div>
+</div>

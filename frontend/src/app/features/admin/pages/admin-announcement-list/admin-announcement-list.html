@@ -1,0 +1,78 @@
+<div class="app-shell">
+  <app-navbar></app-navbar>
+  <div class="app-body">
+    <app-sidebar></app-sidebar>
+    <main class="main-content">
+      
+      <div class="page-header">
+        <div>
+          <h1 class="page-title">Quản lý Thông báo</h1>
+          <p class="page-subtitle">Tạo và quản lý các thông báo dành cho sinh viên, khoa và lớp học</p>
+        </div>
+        <button class="btn-primary" routerLink="/admin/announcements/create">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>
+          Tạo Thông báo
+        </button>
+      </div>
+
+      <div class="toolbar">
+        <div class="search-box">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+          <input type="text" placeholder="Tìm theo tiêu đề..." [value]="searchText()" (input)="searchText.set($any($event.target).value)" (keyup.enter)="onSearch()">
+        </div>
+        <button class="btn-secondary" (click)="onSearch()">Tìm kiếm</button>
+      </div>
+
+      <div class="table-container">
+        @if (isLoading()) {
+          <div class="loading-state">Đang tải dữ liệu...</div>
+        } @else {
+          <table class="data-table">
+            <thead>
+              <tr>
+                <th>Tiêu đề Thông báo</th>
+                <th>Đối tượng</th>
+                <th>Ngày tạo</th>
+                <th>Trạng thái</th>
+                <th>Thao tác</th>
+              </tr>
+            </thead>
+            <tbody>
+              @for (item of announcements(); track item.id) {
+                <tr [class.archived]="item.status === 'archived'">
+                  <td class="bold">
+                    <div class="title-cell">
+                      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></svg>
+                      {{ item.title }}
+                    </div>
+                  </td>
+                  <td><span class="badge audience-badge">{{ getAudienceLabel(item) }}</span></td>
+                  <td>{{ item.created_at | date:'dd/MM/yyyy HH:mm' }}</td>
+                  <td>
+                    <span class="badge status-badge" [class.success]="item.status === 'published'" [class.secondary]="item.status === 'archived'">
+                      {{ item.status === 'published' ? 'Đã xuất bản' : 'Lưu trữ' }}
+                    </span>
+                  </td>
+                  <td class="actions">
+                    <a [routerLink]="['/admin/announcements/edit', item.id]" class="btn-icon" title="Chỉnh sửa">
+                      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>
+                    </a>
+                    @if (item.status === 'published') {
+                      <button class="btn-icon" (click)="archiveAnnouncement(item.id)" title="Lưu trữ">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="21 8 21 21 3 21 3 8"/><rect x="1" y="3" width="22" height="5"/><line x1="10" y1="12" x2="14" y2="12"/></svg>
+                      </button>
+                    }
+                  </td>
+                </tr>
+              }
+              @if (announcements().length === 0) {
+                <tr><td colspan="5" class="empty-state">Không có thông báo nào.</td></tr>
+              }
+            </tbody>
+          </table>
+        }
+      </div>
+
+    </main>
+  </div>
+</div>

@@ -1,0 +1,69 @@
+<div class="app-shell">
+  <app-navbar></app-navbar>
+  <div class="app-body">
+    <app-sidebar></app-sidebar>
+    <main class="main-content">
+      
+      <div class="page-header">
+        <a routerLink="/admin/documents" class="back-link">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="15 18 9 12 15 6"/></svg>
+          Danh sách tài liệu
+        </a>
+        <h1 class="page-title">Tải lên Tài liệu Mới</h1>
+        <p class="page-subtitle">Thêm tài liệu, bài giảng hoặc quy định mới</p>
+      </div>
+
+      <div class="form-container">
+        @if (errorMessage()) { <div class="alert error">{{ errorMessage() }}</div> }
+        @if (successMessage()) { <div class="alert success">{{ successMessage() }}</div> }
+
+        <div class="form-grid">
+          
+          <div class="form-group" style="grid-column: 1 / -1">
+            <label>Tên tài liệu / Tiêu đề</label>
+            <input type="text" [(ngModel)]="formData.title" placeholder="VD: Bài giảng Tuần 1 - Nhập môn CNPM">
+          </div>
+          
+          <div class="form-group">
+            <label>Danh mục (Category)</label>
+            <select [(ngModel)]="formData.type">
+              <option value="course_material">Tài liệu môn học (Course Material)</option>
+              <option value="class_document">Tài liệu lớp học (Class Document)</option>
+              <option value="university_document">Quy định Cao Đẳng</option>
+              <option value="form">Biểu mẫu (Form)</option>
+            </select>
+          </div>
+
+          <div class="form-group">
+            <label>Đối tượng áp dụng</label>
+            <select [(ngModel)]="formData.assign_to">
+              <option value="entire">Toàn trường (Tất cả sinh viên)</option>
+              <option value="class">Chỉ định Lớp học cụ thể</option>
+            </select>
+          </div>
+
+          @if (formData.assign_to === 'class') {
+            <div class="form-group" style="grid-column: 1 / -1">
+              <label>Mã Lớp Học (Class Code)</label>
+              <input type="text" [(ngModel)]="formData.class_name" placeholder="VD: SE01">
+            </div>
+          }
+
+          <div class="form-group" style="grid-column: 1 / -1">
+            <label>File URL (Mô phỏng Upload)</label>
+            <input type="text" [(ngModel)]="formData.file_url" placeholder="VD: https://example.com/document.pdf">
+          </div>
+
+        </div>
+
+        <div class="form-actions">
+          <button class="btn-cancel" routerLink="/admin/documents">Huỷ</button>
+          <button class="btn-submit" (click)="onSubmit()" [disabled]="isLoading()">
+            @if (isLoading()) { Đang tải lên... } @else { Tải lên }
+          </button>
+        </div>
+      </div>
+
+    </main>
+  </div>
+</div>

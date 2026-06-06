@@ -1,0 +1,130 @@
+<div class="app-shell">
+  <app-navbar></app-navbar>
+  <div class="app-body">
+    <app-sidebar></app-sidebar>
+    <main class="main-content">
+      
+      <div class="page-header">
+        <a routerLink="/admin/classes" class="back-link">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="15 18 9 12 15 6"/></svg>
+          Danh sách lớp học
+        </a>
+        <div class="header-content">
+          <div>
+            <h1 class="page-title">{{ classData()?.class_name || 'Đang tải...' }}</h1>
+            <p class="page-subtitle">{{ classData()?.class_code }} • GV: {{ classData()?.lecturer || 'N/A' }}</p>
+          </div>
+        </div>
+      </div>
+
+      @if (!isLoading() && classData()) {
+        <div class="detail-container">
+          <!-- Tabs -->
+          <div class="tabs">
+            <button class="tab-btn" [class.active]="activeTab() === 'students'" (click)="activeTab.set('students')">Sinh viên ({{ classData().students.length }})</button>
+            <button class="tab-btn" [class.active]="activeTab() === 'schedule'" (click)="activeTab.set('schedule')">Lịch học</button>
+            <button class="tab-btn" [class.active]="activeTab() === 'documents'" (click)="activeTab.set('documents')">Tài liệu</button>
+            <button class="tab-btn" [class.active]="activeTab() === 'edit'" (click)="activeTab.set('edit')">Chỉnh sửa lớp</button>
+          </div>
+
+          <!-- Tab Content -->
+          <div class="tab-content">
+            
+            <!-- Students Tab -->
+            @if (activeTab() === 'students') {
+              <table class="data-table">
+                <thead>
+                  <tr>
+                    <th>Mã SV</th>
+                    <th>Họ và tên</th>
+                    <th>Email</th>
+                    <th>Trạng thái</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  @for (student of classData().students; track student.id) {
+                    <tr>
+                      <td class="bold">{{ student.student_code }}</td>
+                      <td>{{ student.full_name }}</td>
+                      <td>{{ student.email || 'N/A' }}</td>
+                      <td>
+                        <span class="status-badge" [class]="student.student_status">
+                          {{ student.student_status === 'verified' ? 'Đã xác thực' : (student.student_status === 'studying' ? 'Đang học' : (student.student_status === 'banned' ? 'Bị cấm' : (student.student_status === 'graduated' ? 'Đã tốt nghiệp' : 'Chưa xác thực'))) }}
+                        </span>
+                      </td>
+                    </tr>
+                  }
+                  @if (classData().students.length === 0) {
+                    <tr><td colspan="4" class="empty-state">Chưa có sinh viên nào trong lớp này.</td></tr>
+                  }
+                </tbody>
+              </table>
+            }
+
+            <!-- Schedule Tab -->
+            @if (activeTab() === 'schedule') {
+              <div class="schedule-grid">
+                @for (sched of classData().schedules; track sched.id) {
+                  <div class="schedule-card">
+                    <div class="sched-day">{{ sched.day_of_week }}</div>
+                    <div class="sched-time">{{ sched.start_time.substring(0,5) }} - {{ sched.end_time.substring(0,5) }}</div>
+                    <div class="sched-subject">{{ sched.subject }}</div>
+                    <div class="sched-room">Phòng: {{ sched.room }}</div>
+                  </div>
+                }
+                @if (classData().schedules.length === 0) {
+                  <div class="empty-state">Chưa có lịch học nào. <a routerLink="/admin/schedules/create">Thêm lịch mới</a></div>
+                }
+              </div>
+            }
+
+            <!-- Documents Tab -->
+            @if (activeTab() === 'documents') {
+              <div class="docs-list">
+                @for (doc of classData().documents; track doc.id) {
+                  <div class="doc-item">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>
+                    <div class="doc-info">
+                      <div class="doc-title">{{ doc.title }}</div>
+                      <a [href]="doc.file_url" target="_blank" class="doc-link">Tải xuống</a>
+                    </div>
+                  </div>
+                }
+                @if (classData().documents.length === 0) {
+                  <div class="empty-state">Chưa có tài liệu nào.</div>
+                }
+              </div>
+            }
+
+            <!-- Edit Tab -->
+            @if (activeTab() === 'edit') {
+              <div class="edit-form">
+                <div class="form-grid">
+                  <div class="form-group">
+                    <label>Tên lớp học</label>
+                    <input type="text" [(ngModel)]="editData().class_name">
+                  </div>
+                  <div class="form-group">
+                    <label>Giảng viên chủ nhiệm</label>
+                    <input type="text" [(ngModel)]="editData().lecturer">
+                  </div>
+                  <div class="form-group">
+                    <label>ID Khoa (Faculty)</label>
+                    <input type="number" [(ngModel)]="editData().faculty_id">
+                  </div>
+                </div>
+                <div class="form-actions">
+                  <button class="btn-submit" (click)="saveChanges()" [disabled]="isSaving()">
+                    @if (isSaving()) { Đang lưu... } @else { Lưu thay đổi }
+                  </button>
+                </div>
+              </div>
+            }
+
+          </div>
+        </div>
+      }
+
+    </main>
+  </div>
+</div>

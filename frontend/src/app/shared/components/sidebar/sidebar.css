@@ -170,3 +170,19 @@
   color: #64748b;
   margin-top: 2px;
 }
+
+/* Mobile responsive */
+@media (max-width: 768px) {
+  .sidebar {
+    width: 68px;
+    padding: 12px 8px;
+  }
+  .sidebar .nav-label,
+  .sidebar .nav-badge,
+  .sidebar .sidebar-footer {
+    display: none;
+  }
+  .collapse-btn {
+    display: none;
+  }
+}

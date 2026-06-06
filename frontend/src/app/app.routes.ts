@@ -34,15 +34,29 @@ export const routes: Routes = [
   { path: 'classes/:id', loadComponent: () => import('./features/classes/pages/class-detail/class-detail').then(m => m.ClassDetail), canActivate: [authGuard] },
   
   // Admin Routes
-  { path: 'admin', component: AdminDashboard, canActivate: [authGuard] },
+  { path: 'admin', redirectTo: 'admin/dashboard', pathMatch: 'full' },
+  { path: 'admin/dashboard', component: AdminDashboard, canActivate: [authGuard] },
   { path: 'admin/users', component: AdminUsers, canActivate: [authGuard] },
   { path: 'admin/settings', component: AdminSettings, canActivate: [authGuard] },
+  { path: 'admin/students/create', loadComponent: () => import('./features/admin/pages/admin-student-create/admin-student-create').then(m => m.AdminStudentCreate), canActivate: [authGuard] },
+  { path: 'admin/students/:id', loadComponent: () => import('./features/admin/pages/admin-student-detail/admin-student-detail').then(m => m.AdminStudentDetail), canActivate: [authGuard] },
+  { path: 'admin/classes', loadComponent: () => import('./features/admin/pages/admin-class-list/admin-class-list').then(m => m.AdminClassList), canActivate: [authGuard] },
+  { path: 'admin/classes/create', loadComponent: () => import('./features/admin/pages/admin-class-create/admin-class-create').then(m => m.AdminClassCreate), canActivate: [authGuard] },
+  { path: 'admin/classes/:id', loadComponent: () => import('./features/admin/pages/admin-class-detail/admin-class-detail').then(m => m.AdminClassDetail), canActivate: [authGuard] },
+  { path: 'admin/schedules', loadComponent: () => import('./features/admin/pages/admin-schedule-list/admin-schedule-list').then(m => m.AdminScheduleList), canActivate: [authGuard] },
+  { path: 'admin/schedules/create', loadComponent: () => import('./features/admin/pages/admin-schedule-create/admin-schedule-create').then(m => m.AdminScheduleCreate), canActivate: [authGuard] },
+  { path: 'admin/schedules/edit/:id', loadComponent: () => import('./features/admin/pages/admin-schedule-edit/admin-schedule-edit').then(m => m.AdminScheduleEdit), canActivate: [authGuard] },
+  { path: 'admin/documents', loadComponent: () => import('./features/admin/pages/admin-document-list/admin-document-list').then(m => m.AdminDocumentList), canActivate: [authGuard] },
+  { path: 'admin/documents/upload', loadComponent: () => import('./features/admin/pages/admin-document-upload/admin-document-upload').then(m => m.AdminDocumentUpload), canActivate: [authGuard] },
+  { path: 'admin/announcements', loadComponent: () => import('./features/admin/pages/admin-announcement-list/admin-announcement-list').then(m => m.AdminAnnouncementList), canActivate: [authGuard] },
+  { path: 'admin/announcements/create', loadComponent: () => import('./features/admin/pages/admin-announcement-create/admin-announcement-create').then(m => m.AdminAnnouncementCreate), canActivate: [authGuard] },
+  { path: 'admin/announcements/edit/:id', loadComponent: () => import('./features/admin/pages/admin-announcement-edit/admin-announcement-edit').then(m => m.AdminAnnouncementEdit), canActivate: [authGuard] },
   
   // Verification Routes
   { path: 'verifications', component: VerificationList, canActivate: [authGuard] },
   { path: 'verifications/:id', component: VerificationDetail, canActivate: [authGuard] },
   
   // Fallbacks
-  { path: '', redirectTo: 'dashboard', pathMatch: 'full' },
-  { path: '**', redirectTo: 'dashboard' }
+  { path: '', pathMatch: 'full', redirectTo: 'dashboard' },
+  { path: '**', loadComponent: () => import('./features/not-found/not-found').then(m => m.NotFound) }
 ];

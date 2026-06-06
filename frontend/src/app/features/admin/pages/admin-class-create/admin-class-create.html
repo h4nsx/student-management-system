@@ -1,0 +1,49 @@
+<div class="app-shell">
+  <app-navbar></app-navbar>
+  <div class="app-body">
+    <app-sidebar></app-sidebar>
+    <main class="main-content">
+      
+      <div class="page-header">
+        <a routerLink="/admin/classes" class="back-link">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="15 18 9 12 15 6"/></svg>
+          Danh sách lớp học
+        </a>
+        <h1 class="page-title">Thêm Lớp Học Mới</h1>
+        <p class="page-subtitle">Tạo lớp học và phân công giảng viên</p>
+      </div>
+
+      <div class="form-container">
+        @if (errorMessage()) { <div class="alert error">{{ errorMessage() }}</div> }
+        @if (successMessage()) { <div class="alert success">{{ successMessage() }}</div> }
+
+        <div class="form-grid">
+          <div class="form-group">
+            <label>Mã lớp học</label>
+            <input type="text" [(ngModel)]="formData.class_code" placeholder="VD: SE01">
+          </div>
+          <div class="form-group">
+            <label>Tên lớp học</label>
+            <input type="text" [(ngModel)]="formData.class_name" placeholder="VD: Kỹ thuật phần mềm 01">
+          </div>
+          <div class="form-group">
+            <label>ID Khoa (Faculty)</label>
+            <input type="number" [(ngModel)]="formData.faculty_id">
+          </div>
+          <div class="form-group">
+            <label>Giảng viên chủ nhiệm</label>
+            <input type="text" [(ngModel)]="formData.lecturer" placeholder="Họ và tên giảng viên">
+          </div>
+        </div>
+
+        <div class="form-actions">
+          <button class="btn-cancel" routerLink="/admin/classes">Huỷ</button>
+          <button class="btn-submit" (click)="onSubmit()" [disabled]="isLoading()">
+            @if (isLoading()) { Đang xử lý... } @else { Tạo Lớp Học }
+          </button>
+        </div>
+      </div>
+
+    </main>
+  </div>
+</div>
