@@ -26,7 +26,7 @@ export class Sidebar implements OnInit {
 
   allNavItems: NavItem[] = [
     { label: 'Trang chủ', icon: 'home', route: '/admin/dashboard', roles: ['admin'] },
-    { label: 'Dashboard', icon: 'home', route: '/dashboard', roles: ['student', 'staff'] },
+    { label: 'Trang chủ', icon: 'home', route: '/dashboard', roles: ['student', 'staff'] },
     { label: 'Danh sách SV', icon: 'users', route: '/students/list', roles: ['admin', 'staff'] },
     { label: 'Quản lý Lớp học', icon: 'book', route: '/admin/classes', roles: ['admin'] },
     { label: 'Thời khoá biểu', icon: 'calendar', route: '/admin/schedules', roles: ['admin'] },

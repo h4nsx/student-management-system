@@ -41,14 +41,13 @@ export class StudentDetail implements OnInit {
       next: (res: any) => {
         if (res.data) {
           this.user.set(res.data);
-          if (res.data.email === 'demo@example.com') {
-            this.loadMockData();
-          } else {
-            this.loadRealData();
-          }
+          this.loadRealData();
         }
       },
-      error: () => this.loadMockData()
+      error: (err) => {
+        console.error(err);
+        this.isLoading.set(false);
+      }
     });
   }
 
@@ -71,25 +70,6 @@ export class StudentDetail implements OnInit {
     });
   }
 
-  loadMockData() {
-    this.user.set({ email: 'demo@example.com', status: 'active' });
-    this.student.set({
-      full_name: 'Nguyễn Văn An',
-      student_code: 'SV2021001',
-      faculty_name: 'Khoa Công nghệ Thông tin',
-      major: 'Kỹ thuật Phần mềm',
-      enrollment_year: '2021',
-      phone: '0901234567',
-      permanent_address: '123 Nguyễn Văn Linh, TP.HCM'
-    });
-    this.editForm.set({
-      phone: '0901234567',
-      email: 'demo@example.com',
-      address: '123 Nguyễn Văn Linh, TP.HCM',
-      avatar: ''
-    });
-    this.isLoading.set(false);
-  }
 
   toggleEdit() {
     if (this.isEditing()) {
@@ -102,16 +82,6 @@ export class StudentDetail implements OnInit {
   confirmSave() {
     this.showConfirmSave.set(false);
     this.isSaving.set(true);
-
-    if (this.user().email === 'demo@example.com') {
-      setTimeout(() => {
-        this.student.update(s => ({ ...s, phone: this.editForm().phone, permanent_address: this.editForm().address }));
-        this.user.update(u => ({ ...u, email: this.editForm().email }));
-        this.isSaving.set(false);
-        this.isEditing.set(false);
-      }, 1000);
-      return;
-    }
 
     const payload = {
       phone: this.editForm().phone,
