@@ -3,6 +3,7 @@ import { DashboardHome } from './features/dashboard/pages/dashboard-home/dashboa
 import { Login } from './features/auth/pages/login/login';
 import { ForgotPassword } from './features/auth/pages/forgot-password/forgot-password';
 import { authGuard } from './core/guards/auth.guard';
+import { roleRedirectGuard } from './core/guards/role-redirect.guard';
 
 import { StudentProfile } from './features/students/pages/student-profile/student-profile';
 import { StudentList } from './features/students/pages/student-list/student-list';
@@ -57,6 +58,6 @@ export const routes: Routes = [
   { path: 'verifications/:id', component: VerificationDetail, canActivate: [authGuard] },
   
   // Fallbacks
-  { path: '', pathMatch: 'full', redirectTo: 'dashboard' },
+  { path: '', pathMatch: 'full', canActivate: [roleRedirectGuard], children: [] },
   { path: '**', loadComponent: () => import('./features/not-found/not-found').then(m => m.NotFound) }
 ];

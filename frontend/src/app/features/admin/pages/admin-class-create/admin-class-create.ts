@@ -5,6 +5,7 @@ import { RouterModule, Router } from '@angular/router';
 import { HttpClient } from '@angular/common/http';
 import { Navbar } from '../../../../shared/components/navbar/navbar';
 import { Sidebar } from '../../../../shared/components/sidebar/sidebar';
+import { NotificationService } from '../../../../core/services/notification.service';
 
 @Component({
   selector: 'app-admin-class-create',
@@ -17,9 +18,9 @@ export class AdminClassCreate {
   private router = inject(Router);
   private http = inject(HttpClient);
 
+  private notification = inject(NotificationService);
+
   isLoading = signal(false);
-  errorMessage = signal('');
-  successMessage = signal('');
 
   formData = {
     class_code: '',
@@ -30,22 +31,21 @@ export class AdminClassCreate {
 
   onSubmit() {
     if (!this.formData.class_code || !this.formData.class_name) {
-      this.errorMessage.set('Vui lòng điền mã lớp và tên lớp');
+      this.notification.warning('Vui lòng điền mã lớp và tên lớp', 'Cảnh báo');
       return;
     }
 
     this.isLoading.set(true);
-    this.errorMessage.set('');
 
     this.http.post('http://localhost:5000/api/admin/classes', this.formData).subscribe({
       next: () => {
         this.isLoading.set(false);
-        this.successMessage.set('Thêm lớp học thành công!');
+        this.notification.success('Thêm lớp học thành công!', 'Thành công');
         setTimeout(() => this.router.navigate(['/admin/classes']), 1000);
       },
       error: (err) => {
         this.isLoading.set(false);
-        this.errorMessage.set(err.error?.message || 'Có lỗi xảy ra khi tạo lớp học');
+        this.notification.error(err.error?.message || 'Có lỗi xảy ra khi tạo lớp học', 'Lỗi');
       }
     });
   }

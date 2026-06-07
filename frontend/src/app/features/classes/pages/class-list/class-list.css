@@ -2,8 +2,8 @@
   display: flex;
   flex-direction: column;
   height: 100vh;
-  background: #0f172a;
-  font-family: 'Inter', system-ui, sans-serif;
+  background: var(--gray-50, #F9FAFB);
+  font-family: var(--font-main, 'DM Sans', sans-serif);
 }
 
 .app-body {
@@ -26,15 +26,15 @@
 
 .page-title {
   font-size: 28px;
-  font-weight: 800;
-  color: #f1f5f9;
+  font-weight: 700;
+  color: var(--gray-900, #111827);
   margin: 0 0 8px;
   letter-spacing: -0.5px;
 }
 
 .page-subtitle {
   font-size: 14px;
-  color: #94a3b8;
+  color: var(--gray-500, #6B7280);
   margin: 0;
 }
 
@@ -47,10 +47,10 @@
 }
 
 .empty-state {
-  color: #64748b;
+  color: var(--gray-500, #6B7280);
   text-align: center;
 }
-.empty-state svg { width: 48px; height: 48px; margin-bottom: 16px; opacity: 0.5; }
+.empty-state svg { width: 48px; height: 48px; margin-bottom: 16px; opacity: 0.5; color: var(--gray-400, #9CA3AF); }
 .empty-state p { font-size: 15px; }
 
 .class-grid {
@@ -62,28 +62,28 @@
 .class-card {
   display: flex;
   flex-direction: column;
-  background: linear-gradient(to bottom right, #1e293b, #0f172a);
-  border: 1px solid rgba(255, 255, 255, 0.05);
-  border-radius: 16px;
+  background: #fff;
+  border: 0.5px solid var(--gray-200, #E5E7EB);
+  border-radius: var(--radius-xl, 16px);
   padding: 24px;
   text-decoration: none;
-  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  transition: all 0.2s;
   position: relative;
   overflow: hidden;
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05);
 }
 
 .class-card::before {
   content: '';
   position: absolute;
   top: 0; left: 0; right: 0; height: 4px;
-  background: linear-gradient(90deg, #6366f1, #a855f7);
-  opacity: 0.7;
+  background: var(--blue-600, #1A56DB);
 }
 
 .class-card:hover {
-  transform: translateY(-4px);
-  border-color: rgba(99, 102, 241, 0.3);
-  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2), 0 0 20px rgba(99, 102, 241, 0.1);
+  transform: translateY(-2px);
+  border-color: var(--blue-300, #A4CAFE);
+  box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
 }
 
 .card-header {
@@ -96,8 +96,8 @@
 .course-code {
   font-size: 12px;
   font-weight: 700;
-  color: #818cf8;
-  background: rgba(99, 102, 241, 0.15);
+  color: var(--blue-700, #1E429F);
+  background: var(--blue-50, #E1EFFE);
   padding: 4px 10px;
   border-radius: 20px;
   letter-spacing: 0.5px;
@@ -105,14 +105,14 @@
 
 .semester-badge {
   font-size: 12px;
-  color: #94a3b8;
+  color: var(--gray-500, #6B7280);
   font-weight: 500;
 }
 
 .course-name {
-  font-size: 20px;
+  font-size: 18px;
   font-weight: 700;
-  color: #f1f5f9;
+  color: var(--gray-900, #111827);
   margin: 0 0 24px;
   line-height: 1.3;
 }
@@ -128,14 +128,14 @@
   display: flex;
   align-items: center;
   gap: 10px;
-  color: #cbd5e1;
+  color: var(--gray-600, #4B5563);
   font-size: 14px;
 }
 
 .detail-item svg {
   width: 16px;
   height: 16px;
-  color: #64748b;
+  color: var(--gray-400, #9CA3AF);
   flex-shrink: 0;
 }
 
@@ -148,27 +148,26 @@
 }
 
 .status-badge.active {
-  background: rgba(52, 211, 153, 0.15);
-  color: #34d399;
+  background: var(--green-50, #DEF7EC);
+  color: var(--green-700, #03543F);
 }
 
 .status-badge.ended {
-  background: rgba(100, 116, 139, 0.2);
-  color: #94a3b8;
+  background: var(--gray-100, #F3F4F6);
+  color: var(--gray-600, #4B5563);
 }
 
 .class-card.ended {
-  opacity: 0.6;
-  filter: grayscale(0.5);
+  opacity: 0.7;
 }
 
 .class-card.ended::before {
-  background: #475569;
+  background: var(--gray-300, #D1D5DB);
 }
 
 .strikethrough {
   text-decoration: line-through;
-  color: #64748b;
+  color: var(--gray-400, #9CA3AF);
 }
 
 /* Timetable Section */
@@ -179,7 +178,7 @@
 .section-title {
   font-size: 20px;
   font-weight: 700;
-  color: #f1f5f9;
+  color: var(--gray-900, #111827);
   margin-bottom: 24px;
 }
 
@@ -193,20 +192,23 @@
 .timetable-column {
   flex: 1;
   min-width: 150px;
-  background: #1e293b;
-  border-radius: 12px;
-  border: 1px solid rgba(255, 255, 255, 0.05);
+  background: #fff;
+  border-radius: var(--radius-lg, 12px);
+  border: 0.5px solid var(--gray-200, #E5E7EB);
   display: flex;
   flex-direction: column;
+  box-shadow: 0 1px 2px rgba(0,0,0,0.02);
 }
 
 .timetable-header {
   padding: 16px;
   text-align: center;
   font-weight: 600;
-  color: #818cf8;
-  border-bottom: 1px solid rgba(255, 255, 255, 0.05);
-  background: rgba(99, 102, 241, 0.05);
+  color: var(--blue-700, #1E429F);
+  border-bottom: 0.5px solid var(--gray-200, #E5E7EB);
+  background: var(--blue-50, #E1EFFE);
+  border-top-left-radius: var(--radius-lg, 12px);
+  border-top-right-radius: var(--radius-lg, 12px);
 }
 
 .timetable-content {
@@ -219,33 +221,36 @@
 
 .empty-day {
   text-align: center;
-  color: #475569;
+  color: var(--gray-400, #9CA3AF);
   font-size: 13px;
   padding: 24px 0;
 }
 
 .timetable-card {
-  background: rgba(15, 23, 42, 0.5);
-  border-left: 3px solid #6366f1;
+  background: var(--gray-50, #F9FAFB);
+  border-left: 3px solid var(--blue-600, #1A56DB);
   padding: 12px;
   border-radius: 6px;
+  border-top: 0.5px solid var(--gray-200, #E5E7EB);
+  border-right: 0.5px solid var(--gray-200, #E5E7EB);
+  border-bottom: 0.5px solid var(--gray-200, #E5E7EB);
 }
 
 .time-periods {
   font-size: 11px;
   font-weight: 700;
-  color: #34d399;
+  color: var(--green-600, #059669);
   margin-bottom: 4px;
 }
 
 .tt-course {
   font-size: 13px;
   font-weight: 600;
-  color: #f1f5f9;
+  color: var(--gray-900, #111827);
   margin-bottom: 4px;
 }
 
 .tt-room {
   font-size: 11px;
-  color: #94a3b8;
+  color: var(--gray-500, #6B7280);
 }

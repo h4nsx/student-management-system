@@ -5,6 +5,7 @@ import { RouterModule, Router } from '@angular/router';
 import { HttpClient } from '@angular/common/http';
 import { Navbar } from '../../../../shared/components/navbar/navbar';
 import { Sidebar } from '../../../../shared/components/sidebar/sidebar';
+import { NotificationService } from '../../../../core/services/notification.service';
 
 @Component({
   selector: 'app-admin-announcement-create',
@@ -17,9 +18,9 @@ export class AdminAnnouncementCreate implements OnInit {
   private router = inject(Router);
   private http = inject(HttpClient);
 
+  private notification = inject(NotificationService);
+
   isLoading = signal(false);
-  errorMessage = signal('');
-  successMessage = signal('');
 
   faculties = signal<any[]>([]);
   classes = signal<any[]>([]);
@@ -42,17 +43,16 @@ export class AdminAnnouncementCreate implements OnInit {
 
   onSubmit() {
     if (!this.formData.title || !this.formData.content) {
-      this.errorMessage.set('Vui lòng điền đầy đủ tiêu đề và nội dung.');
+      this.notification.warning('Vui lòng điền đầy đủ tiêu đề và nội dung.', 'Cảnh báo');
       return;
     }
     
     if (this.formData.audience !== 'all' && !this.formData.target_id) {
-      this.errorMessage.set('Vui lòng nhập mã lớp học hoặc mã khoa.');
+      this.notification.warning('Vui lòng nhập mã lớp học hoặc mã khoa.', 'Cảnh báo');
       return;
     }
 
     this.isLoading.set(true);
-    this.errorMessage.set('');
 
     const payload = {
       title: this.formData.title,
@@ -65,12 +65,12 @@ export class AdminAnnouncementCreate implements OnInit {
     this.http.post('http://localhost:5000/api/admin/announcements', payload).subscribe({
       next: () => {
         this.isLoading.set(false);
-        this.successMessage.set('Đã đăng thông báo thành công!');
+        this.notification.success('Đã đăng thông báo thành công!', 'Thành công');
         setTimeout(() => this.router.navigate(['/admin/announcements']), 1000);
       },
       error: (err) => {
         this.isLoading.set(false);
-        this.errorMessage.set(err.error?.message || 'Có lỗi xảy ra khi tạo thông báo');
+        this.notification.error(err.error?.message || 'Có lỗi xảy ra khi tạo thông báo', 'Lỗi');
       }
     });
   }

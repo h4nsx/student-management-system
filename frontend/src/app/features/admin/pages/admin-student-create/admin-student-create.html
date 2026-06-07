@@ -9,17 +9,11 @@
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="15 18 9 12 15 6"/></svg>
           Quay lại danh sách
         </a>
-        <h1 class="page-title">Thêm Sinh Viên Mới</h1>
-        <p class="page-subtitle">Tạo tài khoản và hồ sơ cho sinh viên</p>
+        <h1 class="page-title">Thêm Sinh viên mới</h1>
+        <p class="page-subtitle">Tạo tài khoản và hồ sơ cho sinh viên mới</p>
       </div>
 
       <div class="form-container">
-        @if (errorMessage()) {
-          <div class="alert error">{{ errorMessage() }}</div>
-        }
-        @if (successMessage()) {
-          <div class="alert success">{{ successMessage() }}</div>
-        }
 
         <div class="form-section">
           <h2 class="section-title">Thông tin tài khoản (Bắt buộc)</h2>

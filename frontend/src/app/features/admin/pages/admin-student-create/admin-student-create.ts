@@ -5,6 +5,7 @@ import { RouterModule, Router } from '@angular/router';
 import { HttpClient } from '@angular/common/http';
 import { Navbar } from '../../../../shared/components/navbar/navbar';
 import { Sidebar } from '../../../../shared/components/sidebar/sidebar';
+import { NotificationService } from '../../../../core/services/notification.service';
 
 @Component({
   selector: 'app-admin-student-create',
@@ -17,9 +18,9 @@ export class AdminStudentCreate implements OnInit {
   private router = inject(Router);
   private http = inject(HttpClient);
 
+  private notification = inject(NotificationService);
+
   isLoading = signal(false);
-  errorMessage = signal('');
-  successMessage = signal('');
 
   formData = {
     email: '',
@@ -47,24 +48,23 @@ export class AdminStudentCreate implements OnInit {
 
   onSubmit() {
     if (!this.formData.email || !this.formData.password || !this.formData.full_name || !this.formData.student_code) {
-      this.errorMessage.set('Vui lòng điền các trường bắt buộc (Email, Mật khẩu, MSSV, Họ tên)');
+      this.notification.warning('Vui lòng điền các trường bắt buộc (Email, Mật khẩu, MSSV, Họ tên)', 'Cảnh báo');
       return;
     }
 
     this.isLoading.set(true);
-    this.errorMessage.set('');
 
     this.http.post('http://localhost:5000/api/admin/students', this.formData).subscribe({
       next: () => {
         this.isLoading.set(false);
-        this.successMessage.set('Thêm sinh viên thành công!');
+        this.notification.success('Thêm sinh viên thành công!', 'Thành công');
         setTimeout(() => {
           this.router.navigate(['/students/list']);
         }, 1500);
       },
       error: (err) => {
         this.isLoading.set(false);
-        this.errorMessage.set(err.error?.message || 'Có lỗi xảy ra khi tạo sinh viên');
+        this.notification.error(err.error?.message || 'Có lỗi xảy ra khi tạo sinh viên', 'Lỗi');
       }
     });
   }

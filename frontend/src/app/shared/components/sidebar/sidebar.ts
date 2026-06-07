@@ -66,4 +66,10 @@ export class Sidebar implements OnInit {
   toggleCollapse() {
     this.isCollapsed.update(v => !v);
   }
+
+  closeMobileMenu() {
+    if (typeof window !== 'undefined') {
+      document.body.classList.remove('mobile-menu-open');
+    }
+  }
 }

@@ -1,4 +1,4 @@
-:host { display: contents; }
+:host { display: contents; font-family: var(--font-main, 'DM Sans', sans-serif); }
 
 .spinner-wrapper {
   display: flex;
@@ -11,7 +11,7 @@
 .spinner-wrapper.overlay {
   position: fixed;
   inset: 0;
-  background: rgba(15, 23, 42, 0.7);
+  background: rgba(255, 255, 255, 0.8);
   backdrop-filter: blur(4px);
   z-index: 9999;
 }
@@ -19,8 +19,8 @@
 .scanner-container {
   position: relative;
   overflow: hidden;
-  border-radius: 8px;
-  background: rgba(99, 102, 241, 0.05);
+  border-radius: var(--radius-md, 8px);
+  background: var(--blue-50, #E1EFFE);
 }
 
 .size-sm .scanner-container { width: 32px; height: 32px; }
@@ -44,26 +44,26 @@
 
 .corner.top-left {
   top: 0; left: 0;
-  border-top-color: #6366f1;
-  border-left-color: #6366f1;
+  border-top-color: var(--blue-600, #1A56DB);
+  border-left-color: var(--blue-600, #1A56DB);
   border-top-left-radius: 8px;
 }
 .corner.top-right {
   top: 0; right: 0;
-  border-top-color: #6366f1;
-  border-right-color: #6366f1;
+  border-top-color: var(--blue-600, #1A56DB);
+  border-right-color: var(--blue-600, #1A56DB);
   border-top-right-radius: 8px;
 }
 .corner.bottom-left {
   bottom: 0; left: 0;
-  border-bottom-color: #6366f1;
-  border-left-color: #6366f1;
+  border-bottom-color: var(--blue-600, #1A56DB);
+  border-left-color: var(--blue-600, #1A56DB);
   border-bottom-left-radius: 8px;
 }
 .corner.bottom-right {
   bottom: 0; right: 0;
-  border-bottom-color: #6366f1;
-  border-right-color: #6366f1;
+  border-bottom-color: var(--blue-600, #1A56DB);
+  border-right-color: var(--blue-600, #1A56DB);
   border-bottom-right-radius: 8px;
 }
 
@@ -73,8 +73,8 @@
   left: 0;
   right: 0;
   height: 2px;
-  background: #34d399;
-  box-shadow: 0 0 8px #34d399, 0 0 16px rgba(52, 211, 153, 0.5);
+  background: var(--green-500, #0E9F6E);
+  box-shadow: 0 0 8px var(--green-500, #0E9F6E), 0 0 16px rgba(14, 159, 110, 0.5);
   animation: scan 1.5s ease-in-out infinite alternate;
 }
 
@@ -87,7 +87,7 @@
 
 .spinner-message {
   font-size: 13px;
-  color: #64748b;
+  color: var(--gray-600, #4B5563);
   margin: 0;
   animation: pulse 1.5s ease-in-out infinite;
   font-weight: 500;

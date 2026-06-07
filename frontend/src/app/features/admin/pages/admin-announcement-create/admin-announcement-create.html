@@ -9,14 +9,11 @@
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="15 18 9 12 15 6"/></svg>
           Danh sách thông báo
         </a>
-        <h1 class="page-title">Tạo Thông báo Mới</h1>
-        <p class="page-subtitle">Soạn thảo và đăng tải thông báo đến sinh viên</p>
+        <h1 class="page-title">Tạo Thông báo mới</h1>
+        <p class="page-subtitle">Soạn thảo và gửi thông báo đến sinh viên hoặc giảng viên</p>
       </div>
 
       <div class="form-container">
-        @if (errorMessage()) { <div class="alert error">{{ errorMessage() }}</div> }
-        @if (successMessage()) { <div class="alert success">{{ successMessage() }}</div> }
-
         <div class="form-grid">
           
           <div class="form-group" style="grid-column: 1 / -1">

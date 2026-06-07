@@ -4,11 +4,12 @@ import { RouterModule, Router } from '@angular/router';
 import { HttpClient } from '@angular/common/http';
 import { Navbar } from '../../../../shared/components/navbar/navbar';
 import { Sidebar } from '../../../../shared/components/sidebar/sidebar';
+import { SkeletonTable } from '../../../../shared/components/skeleton/skeleton';
 
 @Component({
   selector: 'app-admin-class-list',
   standalone: true,
-  imports: [CommonModule, RouterModule, Navbar, Sidebar],
+  imports: [CommonModule, RouterModule, Navbar, Sidebar, SkeletonTable],
   templateUrl: './admin-class-list.html',
   styleUrl: './admin-class-list.css'
 })

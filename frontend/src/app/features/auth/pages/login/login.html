@@ -27,10 +27,10 @@
   <div class="auth-right">
     <div class="auth-card">
       <h2 class="card-title">Đăng nhập</h2>
-      <p class="card-sub">Nhập mã sinh viên và mật khẩu</p>
+      <p class="card-sub">Nhập email và mật khẩu</p>
 
       @if (errorMessage()) {
-        <div class="error-alert">
+        <div class="alert-danger">
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
             <circle cx="12" cy="12" r="10"/>
             <line x1="12" y1="8" x2="12" y2="12"/>
@@ -40,27 +40,27 @@
         </div>
       }
 
-      <div class="form-group">
-        <label>Mã sinh viên</label>
-        <div class="input-wrapper">
-          <svg class="input-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+      <div class="inp-wrap">
+        <label class="inp-label">Email đăng nhập</label>
+        <div class="inp-icon-wrap">
+          <svg class="inp-ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
             <rect x="2" y="5" width="20" height="14" rx="2"/>
             <line x1="2" y1="10" x2="22" y2="10"/>
           </svg>
-          <input type="text" placeholder="VD: demo@example.com"
+          <input class="inp" type="text" placeholder="VD: demo@example.com"
             [value]="studentId()"
             (input)="studentId.set($any($event.target).value)">
         </div>
       </div>
 
-      <div class="form-group">
-        <label>Mật khẩu</label>
-        <div class="input-wrapper">
-          <svg class="input-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+      <div class="inp-wrap">
+        <label class="inp-label">Mật khẩu</label>
+        <div class="inp-icon-wrap">
+          <svg class="inp-ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
             <rect x="3" y="11" width="18" height="11" rx="2" ry="2"/>
             <path d="M7 11V7a5 5 0 0 1 10 0v4"/>
           </svg>
-          <input [type]="showPassword() ? 'text' : 'password'" placeholder="Mật khẩu"
+          <input class="inp" [type]="showPassword() ? 'text' : 'password'" placeholder="Mật khẩu"
             [value]="password()"
             (input)="password.set($any($event.target).value)">
           <button class="toggle-pw" type="button" (click)="showPassword.update(v => !v)">
@@ -88,7 +88,7 @@
         <a routerLink="/forgot-password" class="forgot-link">Quên mật khẩu?</a>
       </div>
 
-      <button class="btn-submit" (click)="onSubmit()" [disabled]="isLoading()">
+      <button class="btn-primary" (click)="onSubmit()" [disabled]="isLoading()">
         @if (isLoading()) {
           <span class="btn-spinner"></span>
           Đang đăng nhập...
@@ -98,11 +98,11 @@
       </button>
 
       @if (isDev) {
-      <div style="display: flex; gap: 10px; margin-top: 10px;">
-        <button class="btn-submit" type="button" (click)="fillDemo()" style="flex: 1; background: #e0e7ff; color: #4338ca;">
-          Demo Sinh viên
+      <div style="display: flex; gap: 10px; margin-top: 16px;">
+        <button class="btn-secondary" type="button" (click)="fillDemo()" style="flex: 1;">
+          Demo SV
         </button>
-        <button class="btn-submit" type="button" (click)="fillAdminDemo()" style="flex: 1; background: #fee2e2; color: #b91c1c;">
+        <button class="btn-danger-light" type="button" (click)="fillAdminDemo()" style="flex: 1;">
           Demo Admin
         </button>
       </div>

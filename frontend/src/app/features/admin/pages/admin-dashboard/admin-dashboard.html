@@ -140,21 +140,21 @@
               </div>
               
               @if (totalPages() > 1) {
-                <div class="pagination-controls" style="display: flex; justify-content: space-between; align-items: center; margin-top: 16px; padding-top: 16px; border-top: 1px solid rgba(255, 255, 255, 0.05);">
+                <div class="pagination-controls" style="display: flex; justify-content: space-between; align-items: center; margin-top: 16px; padding-top: 16px; border-top: 0.5px solid var(--gray-200, #E5E7EB);">
                   <button 
                     (click)="prevPage()" 
                     [disabled]="currentPage() === 1"
-                    style="background: transparent; border: 1px solid rgba(255, 255, 255, 0.1); color: #cbd5e1; padding: 6px 12px; border-radius: 6px; cursor: pointer; font-size: 13px;"
+                    style="background: #fff; border: 1px solid var(--gray-300, #D1D5DB); color: var(--gray-700, #374151); padding: 6px 12px; border-radius: var(--radius-sm, 6px); cursor: pointer; font-size: 13px; font-weight: 500; font-family: var(--font-main, 'DM Sans', sans-serif);"
                     [style.opacity]="currentPage() === 1 ? '0.5' : '1'">
                     Trước
                   </button>
-                  <span style="font-size: 13px; color: #94a3b8;">
+                  <span style="font-size: 13px; color: var(--gray-600, #4B5563); font-weight: 500;">
                     Trang {{ currentPage() }} / {{ totalPages() }}
                   </span>
                   <button 
                     (click)="nextPage()" 
                     [disabled]="currentPage() === totalPages()"
-                    style="background: transparent; border: 1px solid rgba(255, 255, 255, 0.1); color: #cbd5e1; padding: 6px 12px; border-radius: 6px; cursor: pointer; font-size: 13px;"
+                    style="background: #fff; border: 1px solid var(--gray-300, #D1D5DB); color: var(--gray-700, #374151); padding: 6px 12px; border-radius: var(--radius-sm, 6px); cursor: pointer; font-size: 13px; font-weight: 500; font-family: var(--font-main, 'DM Sans', sans-serif);"
                     [style.opacity]="currentPage() === totalPages() ? '0.5' : '1'">
                     Sau
                   </button>

@@ -5,17 +5,20 @@ import { HttpClient } from '@angular/common/http';
 import { FormsModule } from '@angular/forms';
 import { Navbar } from '../../../../shared/components/navbar/navbar';
 import { Sidebar } from '../../../../shared/components/sidebar/sidebar';
+import { NotificationService } from '../../../../core/services/notification.service';
+import { BreadcrumbComponent } from '../../../../shared/components/breadcrumb/breadcrumb';
 
 @Component({
   selector: 'app-admin-class-detail',
   standalone: true,
-  imports: [CommonModule, RouterModule, FormsModule, Navbar, Sidebar],
+  imports: [CommonModule, RouterModule, FormsModule, Navbar, Sidebar, BreadcrumbComponent],
   templateUrl: './admin-class-detail.html',
   styleUrl: './admin-class-detail.css'
 })
 export class AdminClassDetail implements OnInit {
   private route = inject(ActivatedRoute);
   private http = inject(HttpClient);
+  private notification = inject(NotificationService);
 
   classId = signal<string | null>(null);
   activeTab = signal('students');
@@ -25,11 +28,15 @@ export class AdminClassDetail implements OnInit {
   // Edit form
   editData = signal<any>({});
   isSaving = signal(false);
+  faculties = signal<any[]>([]);
 
   ngOnInit() {
     this.route.paramMap.subscribe(params => {
       this.classId.set(params.get('id'));
       this.fetchClassData();
+    });
+    this.http.get<any>('http://localhost:5000/api/admin/faculties').subscribe({
+      next: (res) => { if (res.success) this.faculties.set(res.data); }
     });
   }
 
@@ -70,11 +77,15 @@ export class AdminClassDetail implements OnInit {
     this.isSaving.set(true);
     this.http.put(`http://localhost:5000/api/admin/classes/${this.classId()}`, this.editData()).subscribe({
       next: () => {
+        this.notification.success('Cập nhật lớp học thành công!', 'Thành công');
         this.fetchClassData();
         this.activeTab.set('students');
         this.isSaving.set(false);
       },
-      error: () => this.isSaving.set(false)
+      error: (err) => {
+        this.isSaving.set(false);
+        this.notification.error(err.error?.message || 'Có lỗi xảy ra khi cập nhật', 'Lỗi');
+      }
     });
   }
 }

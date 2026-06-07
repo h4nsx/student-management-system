@@ -99,4 +99,10 @@ export class Navbar implements OnInit {
     this.authService.logout();
     this.router.navigate(['/login']);
   }
+
+  toggleMobileMenu() {
+    if (typeof window !== 'undefined') {
+      document.body.classList.toggle('mobile-menu-open');
+    }
+  }
 }

@@ -5,6 +5,7 @@ import { RouterModule, Router } from '@angular/router';
 import { HttpClient } from '@angular/common/http';
 import { Navbar } from '../../../../shared/components/navbar/navbar';
 import { Sidebar } from '../../../../shared/components/sidebar/sidebar';
+import { NotificationService } from '../../../../core/services/notification.service';
 
 @Component({
   selector: 'app-admin-schedule-create',
@@ -17,9 +18,9 @@ export class AdminScheduleCreate implements OnInit {
   private router = inject(Router);
   private http = inject(HttpClient);
 
+  private notification = inject(NotificationService);
+
   isLoading = signal(false);
-  errorMessage = signal('');
-  successMessage = signal('');
   classes = signal<any[]>([]);
 
   formData = {
@@ -41,22 +42,21 @@ export class AdminScheduleCreate implements OnInit {
 
   onSubmit() {
     if (!this.formData.course_id || !this.formData.subject || !this.formData.room) {
-      this.errorMessage.set('Vui lòng điền đầy đủ môn học, lớp và phòng học');
+      this.notification.warning('Vui lòng điền đầy đủ môn học, lớp và phòng học', 'Cảnh báo');
       return;
     }
 
     this.isLoading.set(true);
-    this.errorMessage.set('');
 
     this.http.post('http://localhost:5000/api/admin/schedules', this.formData).subscribe({
       next: () => {
         this.isLoading.set(false);
-        this.successMessage.set('Thêm lịch học thành công!');
+        this.notification.success('Thêm lịch học thành công!', 'Thành công');
         setTimeout(() => this.router.navigate(['/admin/schedules']), 1000);
       },
       error: (err) => {
         this.isLoading.set(false);
-        this.errorMessage.set(err.error?.message || 'Có lỗi xảy ra khi tạo lịch học');
+        this.notification.error(err.error?.message || 'Có lỗi xảy ra khi tạo lịch học', 'Lỗi');
       }
     });
   }

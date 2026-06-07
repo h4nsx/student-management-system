@@ -9,14 +9,11 @@
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="15 18 9 12 15 6"/></svg>
           Danh sách lịch học
         </a>
-        <h1 class="page-title">Thêm Lịch Học Mới</h1>
-        <p class="page-subtitle">Phân bổ thời gian và phòng học cho các lớp</p>
+        <h1 class="page-title">Thêm Lịch học mới</h1>
+        <p class="page-subtitle">Tạo lịch học cho các lớp đang hoạt động</p>
       </div>
 
       <div class="form-container">
-        @if (errorMessage()) { <div class="alert error">{{ errorMessage() }}</div> }
-        @if (successMessage()) { <div class="alert success">{{ successMessage() }}</div> }
-
         <div class="form-grid">
           <div class="form-group" style="grid-column: 1 / -1">
             <label>Lớp học</label>

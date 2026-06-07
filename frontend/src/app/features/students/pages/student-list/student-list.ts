@@ -8,13 +8,14 @@ import { Sidebar } from '../../../../shared/components/sidebar/sidebar';
 import { DataTable, TableColumn } from '../../../../shared/components/data-table/data-table';
 import { ConfirmDialog } from '../../../../shared/components/confirm-dialog/confirm-dialog';
 import { StudentCard } from '../../components/student-card/student-card';
+import { BreadcrumbComponent } from '../../../../shared/components/breadcrumb/breadcrumb';
 
 type ViewMode = 'table' | 'grid';
 
 @Component({
   selector: 'app-student-list',
   standalone: true,
-  imports: [CommonModule, RouterModule, Navbar, Sidebar, DataTable, ConfirmDialog, StudentCard],
+  imports: [CommonModule, RouterModule, Navbar, Sidebar, DataTable, ConfirmDialog, StudentCard, BreadcrumbComponent],
   templateUrl: './student-list.html',
   styleUrl: './student-list.css'
 })
